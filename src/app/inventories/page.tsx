@@ -1,8 +1,12 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { useSuspenseQuery } from "@apollo/client";
 
 import { gql } from "@apollo/client";
 import { useState } from "react";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
+import { InventoryWithItems } from "@/models/inventory-with-items/types";
 const query = gql`
   query test(
     $name: String!
@@ -52,23 +56,32 @@ const query = gql`
 export default function Page() {
   const [name, setName] = useState("Thorrun");
   const [otherData, setOtherData] = useState(null);
-  const { data, fetchMore, refetch } = useSuspenseQuery(query, {
+
+  const {
+    data: {
+      inventoryWithItems: { getInventoryWithItemsByOwnerName: inventoryData },
+    },
+    fetchMore,
+    refetch,
+  } = useSuspenseQuery(query, {
     variables: {
       name: "Thorrun",
       page: 1,
-      pageSize: 1,
+      pageSize: 10,
       orderBy: "bulk",
       orderDirection: "ASC",
       filter: {
         excludedTraits: ["Toolkit"],
       },
     },
+
     context: {
       fetchOptions: {
         next: { revalidate: 5 },
       },
     },
   });
+
   const changeName = async () => {
     // setName("Zeleus");
     refetch({
@@ -80,9 +93,14 @@ export default function Page() {
 
   return (
     <main>
-      {JSON.stringify(data)}
-      <button onClick={changeName}>change name</button>
+      <Button onClick={changeName}>change name</Button>
       {JSON.stringify(otherData)}
+      <div className="container mx-auto py-10">
+        <DataTable
+          columns={columns}
+          data={inventoryData?.items.entities ?? []}
+        />
+      </div>
     </main>
   );
 }
