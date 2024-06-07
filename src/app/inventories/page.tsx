@@ -1,9 +1,8 @@
-import Image from "next/image";
-import { getClient } from "@/lib/client";
+"use client";
+import { useSuspenseQuery } from "@apollo/client";
 
 import { gql } from "@apollo/client";
-export const revalidate = 5;
-
+import { useState } from "react";
 const query = gql`
   query test(
     $name: String!
@@ -50,9 +49,10 @@ const query = gql`
   }
 `;
 
-export default async function Home() {
-  const { data } = await getClient().query({
-    query,
+export default function Page() {
+  const [name, setName] = useState("Thorrun");
+  const [otherData, setOtherData] = useState(null);
+  const { data, fetchMore, refetch } = useSuspenseQuery(query, {
     variables: {
       name: "Thorrun",
       page: 1,
@@ -63,11 +63,26 @@ export default async function Home() {
         excludedTraits: ["Toolkit"],
       },
     },
+    context: {
+      fetchOptions: {
+        next: { revalidate: 5 },
+      },
+    },
   });
+  const changeName = async () => {
+    // setName("Zeleus");
+    refetch({
+      name: "Zeleus",
+    });
+    //
+    // setOtherData(res);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      test text
+    <main>
       {JSON.stringify(data)}
+      <button onClick={changeName}>change name</button>
+      {JSON.stringify(otherData)}
     </main>
   );
 }
