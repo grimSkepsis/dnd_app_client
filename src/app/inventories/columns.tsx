@@ -12,6 +12,10 @@ export const columns: ColumnDef<InventoryItem>[] = [
     header: "Level",
   },
   {
+    accessorKey: "bulk",
+    header: "Bulk",
+  },
+  {
     accessorKey: "value",
     header: "Value",
   },

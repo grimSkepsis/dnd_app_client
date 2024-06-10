@@ -5,8 +5,9 @@ import { useSuspenseQuery } from "@apollo/client";
 import { gql } from "@apollo/client";
 import { useState } from "react";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
 import { InventoryWithItems } from "@/models/inventory-with-items/types";
+import { PaginationState, Updater } from "@tanstack/react-table";
+import { DataTable } from "@/components/data-table";
 const query = gql`
   query test(
     $name: String!
@@ -42,6 +43,7 @@ const query = gql`
             traits
             description
             bulk
+            level
           }
           page
           pageSize
@@ -67,7 +69,7 @@ export default function Page() {
     variables: {
       name: "Thorrun",
       page: 1,
-      pageSize: 10,
+      pageSize: 1,
       orderBy: "bulk",
       orderDirection: "ASC",
       filter: {
@@ -91,6 +93,20 @@ export default function Page() {
     // setOtherData(res);
   };
 
+  function onPaginationChange(state: Updater<PaginationState>) {}
+
+  function onNextPage() {
+    refetch({
+      page: inventoryData?.items.page + 1,
+    });
+  }
+
+  function onPreviousPage() {
+    refetch({
+      page: inventoryData?.items.page - 1,
+    });
+  }
+
   return (
     <main>
       <Button onClick={changeName}>change name</Button>
@@ -99,6 +115,14 @@ export default function Page() {
         <DataTable
           columns={columns}
           data={inventoryData?.items.entities ?? []}
+          onPaginationChange={onPaginationChange}
+          paginationState={{
+            pageIndex: inventoryData?.items.page - 1,
+            pageSize: inventoryData?.items.pageSize,
+            totalEntities: inventoryData?.items.totalEntities,
+          }}
+          onNextPage={onNextPage}
+          onPreviousPage={onPreviousPage}
         />
       </div>
     </main>
