@@ -16,7 +16,7 @@ function paginationReducer(
     case "PREVIOUS_PAGE":
       return { ...state, pageIndex: state.pageIndex - 1 };
     case "PAGE_SELECTION":
-      return { ...state, pageIndex: action.payload };
+      return { ...state, pageIndex: action.payload ?? 0 };
     case "RESET_PAGE":
       return { ...state, pageIndex: 0 };
     default:

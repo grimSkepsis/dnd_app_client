@@ -2,6 +2,7 @@ export type UsePaginationState = {
   pageIndex: number;
   pageSize: number;
   totalEntities: number;
+  totalPages: number;
 };
 
 export type UsePaginationProps = {

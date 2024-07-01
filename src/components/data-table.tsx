@@ -30,6 +30,7 @@ interface DataTableProps<TData, TValue> {
   paginationState?: UsePaginationState;
   onNextPage?: () => void;
   onPreviousPage?: () => void;
+  onPageSelection?: (pageIndex: number) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -41,6 +42,7 @@ export function DataTable<TData, TValue>({
   paginationState,
   onNextPage: handleNextPage,
   onPreviousPage: handlePreviousPage,
+  onPageSelection: handlePageSelection,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -69,7 +71,9 @@ export function DataTable<TData, TValue>({
 
   function onResetPage() {}
 
-  function onSelectPage() {}
+  function onPageSelection(pageIndex: number) {
+    handlePageSelection?.(pageIndex);
+  }
 
   return (
     <>
@@ -129,7 +133,7 @@ export function DataTable<TData, TValue>({
           onNextPage={onNextPage}
           onResetPage={onResetPage}
           onPreviousPage={onPreviousPage}
-          onSelectPage={onSelectPage}
+          onSelectPage={onPageSelection}
         />
       )}
     </>

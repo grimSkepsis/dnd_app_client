@@ -11,7 +11,7 @@ import { DataTable } from "@/components/data-table";
 const query = gql`
   query test(
     $name: String!
-    $page: Int!
+    $pageIndex: Int!
     $pageSize: Int!
     $orderBy: String!
     $orderDirection: String!
@@ -20,7 +20,7 @@ const query = gql`
     inventoryWithItems {
       getInventoryWithItemsByOwnerName(
         nameTerm: $name
-        page: $page
+        pageIndex: $pageIndex
         pageSize: $pageSize
         orderBy: $orderBy
         orderDirection: $orderDirection
@@ -45,7 +45,7 @@ const query = gql`
             bulk
             level
           }
-          page
+          pageIndex
           pageSize
           totalEntities
           totalPages
@@ -68,7 +68,7 @@ export default function Page() {
   } = useSuspenseQuery(query, {
     variables: {
       name: "Thorrun",
-      page: 1,
+      pageIndex: 0,
       pageSize: 1,
       orderBy: "bulk",
       orderDirection: "ASC",
@@ -97,13 +97,19 @@ export default function Page() {
 
   function onNextPage() {
     refetch({
-      page: inventoryData?.items.page + 1,
+      pageIndex: inventoryData?.items.pageIndex + 1,
     });
   }
 
   function onPreviousPage() {
     refetch({
-      page: inventoryData?.items.page - 1,
+      pageIndex: inventoryData?.items.pageIndex - 1,
+    });
+  }
+
+  function onPageSelection(pageIndex: number) {
+    refetch({
+      pageIndex,
     });
   }
 
@@ -117,12 +123,14 @@ export default function Page() {
           data={inventoryData?.items.entities ?? []}
           onPaginationChange={onPaginationChange}
           paginationState={{
-            pageIndex: inventoryData?.items.page - 1,
+            pageIndex: inventoryData?.items.pageIndex,
             pageSize: inventoryData?.items.pageSize,
             totalEntities: inventoryData?.items.totalEntities,
+            totalPages: inventoryData?.items.totalPages,
           }}
           onNextPage={onNextPage}
           onPreviousPage={onPreviousPage}
+          onPageSelection={onPageSelection}
         />
       </div>
     </main>
