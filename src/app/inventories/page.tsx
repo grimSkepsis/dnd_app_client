@@ -9,7 +9,7 @@ import { InventoryWithItems } from "@/models/inventory-with-items/types";
 import { PaginationState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 const query = gql`
-  query test(
+  query getInventoryAndItems(
     $name: String!
     $pageIndex: Int!
     $pageSize: Int!
