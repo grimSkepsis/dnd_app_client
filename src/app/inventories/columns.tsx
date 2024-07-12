@@ -1,6 +1,6 @@
 "use client";
 
-import { InventoryItem } from "@/models/inventory-items/type";
+import { InventoryItem } from "@/__generated__/graphql";
 import { ColumnDef } from "@tanstack/react-table";
 export const columns: ColumnDef<InventoryItem>[] = [
   {

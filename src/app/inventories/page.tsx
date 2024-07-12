@@ -1,59 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useSuspenseQuery } from "@apollo/client";
-
-import { gql } from "@apollo/client";
 import { useState } from "react";
 import { columns } from "./columns";
-import { InventoryWithItems } from "@/models/inventory-with-items/types";
 import { PaginationState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
-const query = gql`
-  query getInventoryAndItems(
-    $name: String!
-    $pageIndex: Int!
-    $pageSize: Int!
-    $orderBy: String!
-    $orderDirection: String!
-    $filter: InventoryItemQueryFilter!
-  ) {
-    inventoryWithItems {
-      getInventoryWithItemsByOwnerName(
-        nameTerm: $name
-        pageIndex: $pageIndex
-        pageSize: $pageSize
-        orderBy: $orderBy
-        orderDirection: $orderDirection
-        filter: $filter
-      ) {
-        inventory {
-          uuid
-          name
-          cp
-          sp
-          gp
-          pp
-          cp
-        }
-        items {
-          entities {
-            name
-            value
-            quantity
-            traits
-            description
-            bulk
-            level
-          }
-          pageIndex
-          pageSize
-          totalEntities
-          totalPages
-        }
-      }
-    }
-  }
-`;
+import { DEFAULT_INVENTORY_DATA } from "./constants";
+import { inventoryWithItemsQueryDocument } from "./graphql";
 
 export default function Page() {
   const [name, setName] = useState("Thorrun");
@@ -61,11 +14,12 @@ export default function Page() {
 
   const {
     data: {
-      inventoryWithItems: { getInventoryWithItemsByOwnerName: inventoryData },
+      inventoryWithItems: {
+        getInventoryWithItemsByOwnerName: fetchedInventoryData,
+      },
     },
-    fetchMore,
     refetch,
-  } = useSuspenseQuery(query, {
+  } = useSuspenseQuery(inventoryWithItemsQueryDocument, {
     variables: {
       name: "Thorrun",
       pageIndex: 0,
@@ -83,6 +37,8 @@ export default function Page() {
       },
     },
   });
+
+  const inventoryData = fetchedInventoryData ?? DEFAULT_INVENTORY_DATA;
 
   const changeName = async () => {
     // setName("Zeleus");
@@ -120,7 +76,7 @@ export default function Page() {
       <div className="container mx-auto py-10">
         <DataTable
           columns={columns}
-          data={inventoryData?.items.entities ?? []}
+          data={inventoryData.items.entities ?? []}
           onPaginationChange={onPaginationChange}
           paginationState={{
             pageIndex: inventoryData?.items.pageIndex,
