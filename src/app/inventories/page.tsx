@@ -6,39 +6,56 @@ import { columns } from "./columns";
 import { PaginationState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import { DEFAULT_INVENTORY_DATA } from "./constants";
-import { inventoryWithItemsQueryDocument } from "./graphql";
+import {
+  InventoryItemListingFragment,
+  InventoryWithItemsListingFragment,
+  inventoryWithItemsListingQueryDocument,
+} from "./graphql";
+import { FragmentType, useFragment as getFragment } from "@/gql";
 
 export default function Page() {
   const [name, setName] = useState("Thorrun");
   const [otherData, setOtherData] = useState(null);
 
-  const {
-    data: {
-      inventoryWithItems: {
-        getInventoryWithItemsByOwnerName: fetchedInventoryData,
+  const { data, refetch } = useSuspenseQuery(
+    inventoryWithItemsListingQueryDocument,
+    {
+      variables: {
+        name: "Thorrun",
+        pageIndex: 0,
+        pageSize: 2,
+        orderBy: "level",
+        orderDirection: "ASC",
+        filter: {
+          excludedTraits: ["Toolkit"],
+        },
       },
-    },
-    refetch,
-  } = useSuspenseQuery(inventoryWithItemsQueryDocument, {
-    variables: {
-      name: "Thorrun",
-      pageIndex: 0,
-      pageSize: 1,
-      orderBy: "bulk",
-      orderDirection: "ASC",
-      filter: {
-        excludedTraits: ["Toolkit"],
-      },
-    },
 
-    context: {
-      fetchOptions: {
-        next: { revalidate: 5 },
+      context: {
+        fetchOptions: {
+          next: { revalidate: 5 },
+        },
       },
     },
-  });
+  );
 
-  const inventoryData = fetchedInventoryData ?? DEFAULT_INVENTORY_DATA;
+  const inventoryData = getFragment(
+    InventoryWithItemsListingFragment,
+    data.inventoryWithItems.getInventoryWithItemsByOwnerName as FragmentType<
+      typeof InventoryWithItemsListingFragment
+    >,
+  );
+
+  if (!inventoryData?.items?.entities) {
+    return <div>{JSON.stringify(inventoryData)} </div>;
+  }
+
+  const inventoryItems = inventoryData.items.entities.map((item) =>
+    getFragment(
+      InventoryItemListingFragment,
+      item as FragmentType<typeof InventoryItemListingFragment>,
+    ),
+  );
 
   const changeName = async () => {
     // setName("Zeleus");
@@ -76,7 +93,7 @@ export default function Page() {
       <div className="container mx-auto py-10">
         <DataTable
           columns={columns}
-          data={inventoryData.items.entities ?? []}
+          data={inventoryItems}
           onPaginationChange={onPaginationChange}
           paginationState={{
             pageIndex: inventoryData?.items.pageIndex,

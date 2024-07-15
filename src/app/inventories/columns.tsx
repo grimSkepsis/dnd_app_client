@@ -1,8 +1,10 @@
 "use client";
 
-import { InventoryItem } from "@/__generated__/graphql";
+import { FragmentType } from "@/gql";
+import { InventoryItem } from "@/models/inventory-items/type";
 import { ColumnDef } from "@tanstack/react-table";
-export const columns: ColumnDef<InventoryItem>[] = [
+import { InventoryItemListingFragment } from "@/gql/graphql";
+export const columns: ColumnDef<InventoryItemListingFragment>[] = [
   {
     accessorKey: "name",
     header: "Name",
