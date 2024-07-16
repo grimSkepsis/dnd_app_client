@@ -5,13 +5,13 @@ import { useState } from "react";
 import { columns } from "./columns";
 import { PaginationState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
-import { DEFAULT_INVENTORY_DATA } from "./constants";
 import {
-  InventoryItemListingFragment,
   InventoryWithItemsListingFragment,
   inventoryWithItemsListingQueryDocument,
 } from "./graphql";
-import { FragmentType, useFragment as getFragment } from "@/gql";
+import { useFragment } from "@/gql";
+import { isNil } from "lodash";
+import { DEFAULT_PAGINATION_STATE } from "@/hooks/pagination/types";
 
 export default function Page() {
   const [name, setName] = useState("Thorrun");
@@ -39,44 +39,39 @@ export default function Page() {
     },
   );
 
-  const inventoryData = getFragment(
+  const inventoryData = useFragment(
     InventoryWithItemsListingFragment,
-    data.inventoryWithItems.getInventoryWithItemsByOwnerName as FragmentType<
-      typeof InventoryWithItemsListingFragment
-    >,
+    data.inventoryWithItems.getInventoryWithItemsByOwnerName,
   );
 
-  if (!inventoryData?.items?.entities) {
-    return <div>{JSON.stringify(inventoryData)} </div>;
-  }
+  const paginationState = isNil(inventoryData?.items)
+    ? DEFAULT_PAGINATION_STATE
+    : {
+        pageIndex: inventoryData.items.pageIndex,
+        pageSize: inventoryData.items.pageSize,
+        totalEntities: inventoryData.items.totalEntities,
+        totalPages: inventoryData.items.totalPages,
+      };
 
-  const inventoryItems = inventoryData.items.entities.map((item) =>
-    getFragment(
-      InventoryItemListingFragment,
-      item as FragmentType<typeof InventoryItemListingFragment>,
-    ),
-  );
+  const inventoryItems = inventoryData?.items?.entities ?? [];
 
   const changeName = async () => {
-    // setName("Zeleus");
     refetch({
       name: "Zeleus",
     });
-    //
-    // setOtherData(res);
   };
 
   function onPaginationChange(state: Updater<PaginationState>) {}
 
   function onNextPage() {
     refetch({
-      pageIndex: inventoryData?.items.pageIndex + 1,
+      pageIndex: paginationState.pageIndex + 1,
     });
   }
 
   function onPreviousPage() {
     refetch({
-      pageIndex: inventoryData?.items.pageIndex - 1,
+      pageIndex: paginationState.pageIndex - 1,
     });
   }
 
@@ -95,12 +90,7 @@ export default function Page() {
           columns={columns}
           data={inventoryItems}
           onPaginationChange={onPaginationChange}
-          paginationState={{
-            pageIndex: inventoryData?.items.pageIndex,
-            pageSize: inventoryData?.items.pageSize,
-            totalEntities: inventoryData?.items.totalEntities,
-            totalPages: inventoryData?.items.totalPages,
-          }}
+          paginationState={paginationState}
           onNextPage={onNextPage}
           onPreviousPage={onPreviousPage}
           onPageSelection={onPageSelection}

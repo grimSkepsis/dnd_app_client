@@ -1,6 +1,6 @@
 import { graphql } from "@/gql";
 
-export const InventoryItemListingFragment = graphql(/* GraphQL */ `
+export const InventoryItemListingFragmentDocument = graphql(/* GraphQL */ `
   fragment InventoryItemListing on InventoryItem {
     name
     value
