@@ -1,9 +1,7 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { useSuspenseQuery } from "@apollo/client";
-import { useState } from "react";
 import { columns } from "./columns";
-import { PaginationState, Updater } from "@tanstack/react-table";
+import { PaginationState, SortingState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import {
   InventoryWithItemsListingFragment,
@@ -12,11 +10,9 @@ import {
 import { useFragment } from "@/gql";
 import { isNil } from "lodash";
 import { DEFAULT_PAGINATION_STATE } from "@/hooks/pagination/types";
+import { useState } from "react";
 
 export default function Page() {
-  const [name, setName] = useState("Thorrun");
-  const [otherData, setOtherData] = useState(null);
-
   const { data, refetch } = useSuspenseQuery(
     inventoryWithItemsListingQueryDocument,
     {
@@ -38,6 +34,7 @@ export default function Page() {
       },
     },
   );
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const inventoryData = useFragment(
     InventoryWithItemsListingFragment,
@@ -55,13 +52,21 @@ export default function Page() {
 
   const inventoryItems = inventoryData?.items?.entities ?? [];
 
-  const changeName = async () => {
-    refetch({
-      name: "Zeleus",
-    });
-  };
+  function onPaginationChange(state: Updater<PaginationState>) {
+    console.log("onPaginationChange", state);
+  }
 
-  function onPaginationChange(state: Updater<PaginationState>) {}
+  function onSortChange(state: Updater<SortingState>) {
+    if (typeof state === "function") {
+      const newSorting = state(sorting);
+      console.log(newSorting);
+      setSorting(newSorting);
+      refetch({
+        orderBy: newSorting[0].id,
+        orderDirection: newSorting[0].desc ? "DESC" : "ASC",
+      });
+    }
+  }
 
   function onNextPage() {
     refetch({
@@ -83,13 +88,13 @@ export default function Page() {
 
   return (
     <main>
-      <Button onClick={changeName}>change name</Button>
-      {JSON.stringify(otherData)}
       <div className="container mx-auto py-10">
         <DataTable
           columns={columns}
           data={inventoryItems}
+          sortingState={sorting}
           onPaginationChange={onPaginationChange}
+          onSortingChange={onSortChange}
           paginationState={paginationState}
           onNextPage={onNextPage}
           onPreviousPage={onPreviousPage}

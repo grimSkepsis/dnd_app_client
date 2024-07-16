@@ -4,6 +4,7 @@ import {
   ColumnDef,
   OnChangeFn,
   PaginationState,
+  SortingState,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -27,6 +28,8 @@ interface DataTableProps<TData, TValue> {
   pageCount?: number;
   rowCount?: number;
   onPaginationChange: OnChangeFn<PaginationState>;
+  onSortingChange?: OnChangeFn<SortingState>;
+  sortingState?: SortingState;
   paginationState?: UsePaginationState;
   onNextPage?: () => void;
   onPreviousPage?: () => void;
@@ -39,7 +42,9 @@ export function DataTable<TData, TValue>({
   pageCount,
   rowCount,
   onPaginationChange,
+  onSortingChange,
   paginationState,
+  sortingState,
   onNextPage: handleNextPage,
   onPreviousPage: handlePreviousPage,
   onPageSelection: handlePageSelection,
@@ -53,11 +58,13 @@ export function DataTable<TData, TValue>({
     pageCount,
     rowCount,
     onPaginationChange,
+    onSortingChange,
     state: {
       pagination: {
         pageIndex: paginationState?.pageIndex ?? 0,
         pageSize: paginationState?.pageSize ?? 10,
       },
+      sorting: sortingState,
     },
   });
 

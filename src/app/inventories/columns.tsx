@@ -2,8 +2,10 @@
 
 import { FragmentType, useFragment } from "@/gql";
 import {} from "@/models/inventory-items/type";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, SortDirection } from "@tanstack/react-table";
 import { InventoryItemListingFragmentDocument } from "./graphql";
+import { Button } from "@/components/ui/button";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 
 // function CellRenderer({
 //   row,
@@ -17,16 +19,46 @@ import { InventoryItemListingFragmentDocument } from "./graphql";
 //   return <div>{getter(itemData)}</div>;
 // }
 
+function calcSortingIcon(sortDir: SortDirection | false) {
+  if (sortDir === "asc") {
+    return <ArrowUp className="ml-2 h-4 w-4" />;
+  } else if (sortDir === "desc") {
+    return <ArrowDown className="ml-2 h-4 w-4" />;
+  } else {
+    return <ArrowUpDown className="ml-2 h-4 w-4" />;
+  }
+}
+
 export const columns: ColumnDef<
   FragmentType<typeof InventoryItemListingFragmentDocument>
 >[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          {calcSortingIcon(column.getIsSorted())}
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "level",
-    header: "Level",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Level
+          {calcSortingIcon(column.getIsSorted())}
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "bulk",
