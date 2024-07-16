@@ -8,11 +8,14 @@ import {
   inventoryWithItemsListingQueryDocument,
 } from "./graphql";
 import { useFragment } from "@/gql";
-import { isNil } from "lodash";
+import { isEmpty, isNil } from "lodash";
 import { DEFAULT_PAGINATION_STATE } from "@/hooks/pagination/types";
 import { useState } from "react";
 
+const DEFAULT_SORTING_STATE: SortingState = [{ id: "name", desc: false }];
+
 export default function Page() {
+  const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING_STATE);
   const { data, refetch } = useSuspenseQuery(
     inventoryWithItemsListingQueryDocument,
     {
@@ -20,10 +23,10 @@ export default function Page() {
         name: "Thorrun",
         pageIndex: 0,
         pageSize: 2,
-        orderBy: "level",
-        orderDirection: "ASC",
+        orderBy: DEFAULT_SORTING_STATE[0].id,
+        orderDirection: DEFAULT_SORTING_STATE[0].desc ? "DESC" : "ASC",
         filter: {
-          excludedTraits: ["Toolkit"],
+          // excludedTraits: ["Toolkit"],
         },
       },
 
@@ -34,7 +37,6 @@ export default function Page() {
       },
     },
   );
-  const [sorting, setSorting] = useState<SortingState>([]);
 
   const inventoryData = useFragment(
     InventoryWithItemsListingFragment,
@@ -58,12 +60,18 @@ export default function Page() {
 
   function onSortChange(state: Updater<SortingState>) {
     if (typeof state === "function") {
-      const newSorting = state(sorting);
-      console.log(newSorting);
+      let newSorting = state(sorting);
+
+      if (isEmpty(newSorting)) newSorting = DEFAULT_SORTING_STATE;
+
       setSorting(newSorting);
       refetch({
-        orderBy: newSorting[0].id,
-        orderDirection: newSorting[0].desc ? "DESC" : "ASC",
+        orderBy: isEmpty(newSorting) ? "name" : newSorting[0].id,
+        orderDirection: isEmpty(newSorting)
+          ? "desc"
+          : newSorting[0].desc
+            ? "DESC"
+            : "ASC",
       });
     }
   }
