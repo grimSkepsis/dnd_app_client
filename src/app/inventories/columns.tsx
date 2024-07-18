@@ -7,14 +7,16 @@ import { InventoryItemListingFragmentDocument } from "./graphql";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { isNil } from "lodash";
+import { InventoryItemListingFragment } from "@/gql/graphql";
 
-type CellRendererProps = {
+type CellRendererProps<T> = {
   rowData: FragmentType<typeof InventoryItemListingFragmentDocument>;
+  getDisplayValue: (data: T) => string | number | JSX.Element;
 };
 
-function CellRenderer({ rowData }: CellRendererProps) {
+function CellRenderer<T>({ rowData, getDisplayValue }: CellRendererProps<T>) {
   const data = useFragment(InventoryItemListingFragmentDocument, rowData);
-  return <div>{data.displayValue}</div>;
+  return <div>{getDisplayValue(data as T)}</div>;
 }
 
 type HeaderRendererProps = {
@@ -76,16 +78,41 @@ export const columns: ColumnDef<
   {
     accessorKey: "bulk",
     header: ({ column }) => <HeaderRenderer title="Bulk" column={column} />,
+    cell: (props) => {
+      return (
+        <CellRenderer<InventoryItemListingFragment>
+          rowData={props.row.original}
+          getDisplayValue={(data) => data.displayBulk}
+        />
+      );
+    },
   },
   {
     accessorKey: "value",
     header: ({ column }) => <HeaderRenderer title="Value" column={column} />,
     cell: (props) => {
-      return <CellRenderer rowData={props.row.original} />;
+      return (
+        <CellRenderer<InventoryItemListingFragment>
+          rowData={props.row.original}
+          getDisplayValue={(data) => data.displayValue}
+        />
+      );
     },
   },
   {
     accessorKey: "quantity",
     header: ({ column }) => <HeaderRenderer title="Quantity" column={column} />,
+  },
+  {
+    accessorKey: "traits",
+    header: "Traits",
+    cell: (props) => {
+      return (
+        <CellRenderer<InventoryItemListingFragment>
+          rowData={props.row.original}
+          getDisplayValue={(data) => data.traits.join(", ")}
+        />
+      );
+    },
   },
 ];

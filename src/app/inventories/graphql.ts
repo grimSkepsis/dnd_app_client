@@ -9,6 +9,7 @@ export const InventoryItemListingFragmentDocument = graphql(/* GraphQL */ `
     traits
     description
     bulk
+    displayBulk
     level
   }
 `);
