@@ -8,21 +8,19 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { isNil } from "lodash";
 
-// function CellRenderer({
-//   row,
-//   getter,
-// }: {
-//   row: FragmentType<typeof InventoryItemListingFragmentDocument>;
-//   getter: (item: InventoryItemListingFragment) => string | number;
-// }) {
-//   const itemData = useFragment(InventoryItemListingFragmentDocument, row);
-//   console.log("ITEM DATA", itemData);
-//   return <div>{getter(itemData)}</div>;
-// }
+type CellRendererProps = {
+  rowData: FragmentType<typeof InventoryItemListingFragmentDocument>;
+};
+
+function CellRenderer({ rowData }: CellRendererProps) {
+  const data = useFragment(InventoryItemListingFragmentDocument, rowData);
+  return <div>{data.displayValue}</div>;
+}
 
 type HeaderRendererProps = {
   column: Column<any>;
   title: string;
+  sorterOverride?: string;
 };
 
 function HeaderRenderer({
@@ -82,6 +80,9 @@ export const columns: ColumnDef<
   {
     accessorKey: "value",
     header: ({ column }) => <HeaderRenderer title="Value" column={column} />,
+    cell: (props) => {
+      return <CellRenderer rowData={props.row.original} />;
+    },
   },
   {
     accessorKey: "quantity",

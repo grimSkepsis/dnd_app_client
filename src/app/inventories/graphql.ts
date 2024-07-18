@@ -4,6 +4,7 @@ export const InventoryItemListingFragmentDocument = graphql(/* GraphQL */ `
   fragment InventoryItemListing on InventoryItem {
     name
     value
+    displayValue
     quantity
     traits
     description

@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  fragment InventoryItemListing on InventoryItem {\n    name\n    value\n    quantity\n    traits\n    description\n    bulk\n    level\n  }\n": types.InventoryItemListingFragmentDoc,
+    "\n  fragment InventoryItemListing on InventoryItem {\n    name\n    value\n    displayValue\n    quantity\n    traits\n    description\n    bulk\n    level\n  }\n": types.InventoryItemListingFragmentDoc,
     "\n  fragment InventoryWithItemsListing on InventoryWithItems {\n    inventory {\n      uuid\n      name\n      cp\n      sp\n      gp\n      pp\n      cp\n    }\n    items {\n      entities {\n        ...InventoryItemListing\n      }\n      pageIndex\n      pageSize\n      totalEntities\n      totalPages\n    }\n  }\n": types.InventoryWithItemsListingFragmentDoc,
     "\n  query inventoryWithItemsListing(\n    $name: String!\n    $pageIndex: Int!\n    $pageSize: Int!\n    $orderBy: String!\n    $orderDirection: String!\n    $filter: InventoryItemQueryFilter!\n  ) {\n    inventoryWithItems {\n      getInventoryWithItemsByOwnerName(\n        nameTerm: $name\n        pageIndex: $pageIndex\n        pageSize: $pageSize\n        orderBy: $orderBy\n        orderDirection: $orderDirection\n        filter: $filter\n      ) {\n        ...InventoryWithItemsListing\n      }\n    }\n  }\n": types.InventoryWithItemsListingDocument,
 };
@@ -35,7 +35,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment InventoryItemListing on InventoryItem {\n    name\n    value\n    quantity\n    traits\n    description\n    bulk\n    level\n  }\n"): (typeof documents)["\n  fragment InventoryItemListing on InventoryItem {\n    name\n    value\n    quantity\n    traits\n    description\n    bulk\n    level\n  }\n"];
+export function graphql(source: "\n  fragment InventoryItemListing on InventoryItem {\n    name\n    value\n    displayValue\n    quantity\n    traits\n    description\n    bulk\n    level\n  }\n"): (typeof documents)["\n  fragment InventoryItemListing on InventoryItem {\n    name\n    value\n    displayValue\n    quantity\n    traits\n    description\n    bulk\n    level\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
