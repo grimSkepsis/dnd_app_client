@@ -2,7 +2,7 @@
 
 import { FragmentType, useFragment } from "@/gql";
 import {} from "@/models/inventory-items/type";
-import { ColumnDef, SortDirection } from "@tanstack/react-table";
+import { Column, ColumnDef, SortDirection } from "@tanstack/react-table";
 import { InventoryItemListingFragmentDocument } from "./graphql";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
@@ -19,6 +19,30 @@ import { isNil } from "lodash";
 //   console.log("ITEM DATA", itemData);
 //   return <div>{getter(itemData)}</div>;
 // }
+
+type HeaderRendererProps = {
+  column: Column<any>;
+  title: string;
+};
+
+function HeaderRenderer({
+  column: { clearSorting, toggleSorting, getIsSorted },
+  title,
+}: HeaderRendererProps) {
+  return (
+    <Button
+      variant="ghost"
+      onClick={() =>
+        isNil(calcSortState(getIsSorted()))
+          ? clearSorting()
+          : toggleSorting(calcSortState(getIsSorted()))
+      }
+    >
+      {title}
+      {calcSortingIcon(getIsSorted())}
+    </Button>
+  );
+}
 
 function calcSortingIcon(sortDir: SortDirection | false) {
   if (sortDir === "asc") {
@@ -45,52 +69,22 @@ export const columns: ColumnDef<
 >[] = [
   {
     accessorKey: "name",
-    header: ({ column }) => {
-      const nextSortState = calcSortState(column.getIsSorted());
-      return (
-        <Button
-          variant="ghost"
-          onClick={() =>
-            isNil(nextSortState)
-              ? column.clearSorting()
-              : column.toggleSorting(nextSortState)
-          }
-        >
-          Name
-          {calcSortingIcon(column.getIsSorted())}
-        </Button>
-      );
-    },
+    header: ({ column }) => <HeaderRenderer title="Name" column={column} />,
   },
   {
     accessorKey: "level",
-    header: ({ column }) => {
-      const newSortState = calcSortState(column.getIsSorted());
-      return (
-        <Button
-          variant="ghost"
-          onClick={() =>
-            isNil(newSortState)
-              ? column.clearSorting()
-              : column.toggleSorting(newSortState)
-          }
-        >
-          Level
-          {calcSortingIcon(column.getIsSorted())}
-        </Button>
-      );
-    },
+    header: ({ column }) => <HeaderRenderer title="Level" column={column} />,
   },
   {
     accessorKey: "bulk",
-    header: "Bulk",
+    header: ({ column }) => <HeaderRenderer title="Bulk" column={column} />,
   },
   {
     accessorKey: "value",
-    header: "Value",
+    header: ({ column }) => <HeaderRenderer title="Value" column={column} />,
   },
   {
     accessorKey: "quantity",
-    header: "Quantity",
+    header: ({ column }) => <HeaderRenderer title="Quantity" column={column} />,
   },
 ];
