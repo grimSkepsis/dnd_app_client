@@ -46,23 +46,17 @@ export type InventoryItem = {
 
 export type InventoryItemQuery = {
   __typename?: 'InventoryItemQuery';
-  getInventoryItems?: Maybe<PaginatedResponse>;
+  getInventoryItems?: Maybe<PaginatedInventoryItemResponse>;
 };
 
 
 export type InventoryItemQueryGetInventoryItemsArgs = {
-  filter: InventoryItemQueryFilter;
+  filter: ItemQueryFilter;
   inventoryId: Scalars['String']['input'];
   orderBy: Scalars['String']['input'];
   orderDirection: Scalars['String']['input'];
   pageIndex: Scalars['Int']['input'];
   pageSize: Scalars['Int']['input'];
-};
-
-export type InventoryItemQueryFilter = {
-  excludedTraits?: InputMaybe<Array<Scalars['String']['input']>>;
-  includedTraits?: InputMaybe<Array<Scalars['String']['input']>>;
-  searchValue?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type InventoryQuery = {
@@ -96,7 +90,7 @@ export type InventoryQueryGetInventoryByOwnerNameArgs = {
 export type InventoryWithItems = {
   __typename?: 'InventoryWithItems';
   inventory: Inventory;
-  items: PaginatedResponse;
+  items: PaginatedInventoryItemResponse;
 };
 
 export type InventoryWithItemsQuery = {
@@ -106,7 +100,7 @@ export type InventoryWithItemsQuery = {
 
 
 export type InventoryWithItemsQueryGetInventoryWithItemsByOwnerNameArgs = {
-  filter: InventoryItemQueryFilter;
+  filter: ItemQueryFilter;
   nameTerm: Scalars['String']['input'];
   orderBy: Scalars['String']['input'];
   orderDirection: Scalars['String']['input'];
@@ -114,9 +108,54 @@ export type InventoryWithItemsQueryGetInventoryWithItemsByOwnerNameArgs = {
   pageSize: Scalars['Int']['input'];
 };
 
-export type PaginatedResponse = {
-  __typename?: 'PaginatedResponse';
+export type Item = {
+  __typename?: 'Item';
+  activationCost: Scalars['String']['output'];
+  bulk: Scalars['Float']['output'];
+  description: Scalars['String']['output'];
+  displayBulk: Scalars['String']['output'];
+  displayValue: Scalars['String']['output'];
+  effect: Scalars['String']['output'];
+  level: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  traits: Array<Scalars['String']['output']>;
+  usageRequirements: Scalars['String']['output'];
+  uuid: Scalars['ID']['output'];
+  value: Scalars['Int']['output'];
+};
+
+export type ItemQuery = {
+  __typename?: 'ItemQuery';
+  getItems?: Maybe<PaginatedItemResponse>;
+};
+
+
+export type ItemQueryGetItemsArgs = {
+  filter: ItemQueryFilter;
+  orderBy: Scalars['String']['input'];
+  orderDirection: Scalars['String']['input'];
+  pageIndex: Scalars['Int']['input'];
+  pageSize: Scalars['Int']['input'];
+};
+
+export type ItemQueryFilter = {
+  excludedTraits?: InputMaybe<Array<Scalars['String']['input']>>;
+  includedTraits?: InputMaybe<Array<Scalars['String']['input']>>;
+  searchValue?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PaginatedInventoryItemResponse = {
+  __typename?: 'PaginatedInventoryItemResponse';
   entities: Array<InventoryItem>;
+  pageIndex: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  totalEntities: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type PaginatedItemResponse = {
+  __typename?: 'PaginatedItemResponse';
+  entities: Array<Item>;
   pageIndex: Scalars['Int']['output'];
   pageSize: Scalars['Int']['output'];
   totalEntities: Scalars['Int']['output'];
@@ -128,11 +167,12 @@ export type QueryRoot = {
   inventory: InventoryQuery;
   inventoryItems: InventoryItemQuery;
   inventoryWithItems: InventoryWithItemsQuery;
+  items: ItemQuery;
 };
 
 export type InventoryItemListingFragment = { __typename?: 'InventoryItem', name: string, value: number, displayValue: string, quantity: number, traits: Array<string>, description: string, bulk: number, displayBulk: string, level: number } & { ' $fragmentName'?: 'InventoryItemListingFragment' };
 
-export type InventoryWithItemsListingFragment = { __typename?: 'InventoryWithItems', inventory: { __typename?: 'Inventory', uuid: string, name: string, cp: number, sp: number, gp: number, pp: number }, items: { __typename?: 'PaginatedResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<(
+export type InventoryWithItemsListingFragment = { __typename?: 'InventoryWithItems', inventory: { __typename?: 'Inventory', uuid: string, name: string, cp: number, sp: number, gp: number, pp: number }, items: { __typename?: 'PaginatedInventoryItemResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<(
       { __typename?: 'InventoryItem' }
       & { ' $fragmentRefs'?: { 'InventoryItemListingFragment': InventoryItemListingFragment } }
     )> } } & { ' $fragmentName'?: 'InventoryWithItemsListingFragment' };
@@ -143,7 +183,7 @@ export type InventoryWithItemsListingQueryVariables = Exact<{
   pageSize: Scalars['Int']['input'];
   orderBy: Scalars['String']['input'];
   orderDirection: Scalars['String']['input'];
-  filter: InventoryItemQueryFilter;
+  filter: ItemQueryFilter;
 }>;
 
 
@@ -154,4 +194,4 @@ export type InventoryWithItemsListingQuery = { __typename?: 'QueryRoot', invento
 
 export const InventoryItemListingFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"InventoryItemListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"displayValue"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"traits"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"bulk"}},{"kind":"Field","name":{"kind":"Name","value":"displayBulk"}},{"kind":"Field","name":{"kind":"Name","value":"level"}}]}}]} as unknown as DocumentNode<InventoryItemListingFragment, unknown>;
 export const InventoryWithItemsListingFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"InventoryWithItemsListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryWithItems"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inventory"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uuid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"cp"}},{"kind":"Field","name":{"kind":"Name","value":"sp"}},{"kind":"Field","name":{"kind":"Name","value":"gp"}},{"kind":"Field","name":{"kind":"Name","value":"pp"}},{"kind":"Field","name":{"kind":"Name","value":"cp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"InventoryItemListing"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageIndex"}},{"kind":"Field","name":{"kind":"Name","value":"pageSize"}},{"kind":"Field","name":{"kind":"Name","value":"totalEntities"}},{"kind":"Field","name":{"kind":"Name","value":"totalPages"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"InventoryItemListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"displayValue"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"traits"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"bulk"}},{"kind":"Field","name":{"kind":"Name","value":"displayBulk"}},{"kind":"Field","name":{"kind":"Name","value":"level"}}]}}]} as unknown as DocumentNode<InventoryWithItemsListingFragment, unknown>;
-export const InventoryWithItemsListingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"inventoryWithItemsListing"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageIndex"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderDirection"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryItemQueryFilter"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inventoryWithItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getInventoryWithItemsByOwnerName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"nameTerm"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"pageIndex"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageIndex"}}},{"kind":"Argument","name":{"kind":"Name","value":"pageSize"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderDirection"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderDirection"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"InventoryWithItemsListing"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"InventoryItemListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"displayValue"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"traits"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"bulk"}},{"kind":"Field","name":{"kind":"Name","value":"displayBulk"}},{"kind":"Field","name":{"kind":"Name","value":"level"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"InventoryWithItemsListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryWithItems"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inventory"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uuid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"cp"}},{"kind":"Field","name":{"kind":"Name","value":"sp"}},{"kind":"Field","name":{"kind":"Name","value":"gp"}},{"kind":"Field","name":{"kind":"Name","value":"pp"}},{"kind":"Field","name":{"kind":"Name","value":"cp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"InventoryItemListing"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageIndex"}},{"kind":"Field","name":{"kind":"Name","value":"pageSize"}},{"kind":"Field","name":{"kind":"Name","value":"totalEntities"}},{"kind":"Field","name":{"kind":"Name","value":"totalPages"}}]}}]}}]} as unknown as DocumentNode<InventoryWithItemsListingQuery, InventoryWithItemsListingQueryVariables>;
+export const InventoryWithItemsListingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"inventoryWithItemsListing"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageIndex"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderDirection"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ItemQueryFilter"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inventoryWithItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getInventoryWithItemsByOwnerName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"nameTerm"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"pageIndex"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageIndex"}}},{"kind":"Argument","name":{"kind":"Name","value":"pageSize"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderDirection"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderDirection"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"InventoryWithItemsListing"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"InventoryItemListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"displayValue"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"traits"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"bulk"}},{"kind":"Field","name":{"kind":"Name","value":"displayBulk"}},{"kind":"Field","name":{"kind":"Name","value":"level"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"InventoryWithItemsListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryWithItems"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inventory"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uuid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"cp"}},{"kind":"Field","name":{"kind":"Name","value":"sp"}},{"kind":"Field","name":{"kind":"Name","value":"gp"}},{"kind":"Field","name":{"kind":"Name","value":"pp"}},{"kind":"Field","name":{"kind":"Name","value":"cp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"InventoryItemListing"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageIndex"}},{"kind":"Field","name":{"kind":"Name","value":"pageSize"}},{"kind":"Field","name":{"kind":"Name","value":"totalEntities"}},{"kind":"Field","name":{"kind":"Name","value":"totalPages"}}]}}]}}]} as unknown as DocumentNode<InventoryWithItemsListingQuery, InventoryWithItemsListingQueryVariables>;

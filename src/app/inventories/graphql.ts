@@ -44,7 +44,7 @@ export const inventoryWithItemsListingQueryDocument = graphql(`
     $pageSize: Int!
     $orderBy: String!
     $orderDirection: String!
-    $filter: InventoryItemQueryFilter!
+    $filter: ItemQueryFilter!
   ) {
     inventoryWithItems {
       getInventoryWithItemsByOwnerName(
