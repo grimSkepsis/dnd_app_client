@@ -1,5 +1,40 @@
 import { graphql } from "@/gql";
 
+export const ItemListingFragmentDocument = graphql(/* GraphQL */ `
+  fragment ItemListing on Item {
+    uuid
+    name
+  }
+`);
+
+export const ItemsListingQueryDocument = graphql(`
+  query itemsListing(
+    $pageIndex: Int!
+    $pageSize: Int!
+    $orderBy: String!
+    $orderDirection: String!
+    $filter: ItemQueryFilter!
+  ) {
+    items {
+      getItems(
+        pageIndex: $pageIndex
+        pageSize: $pageSize
+        orderBy: $orderBy
+        orderDirection: $orderDirection
+        filter: $filter
+      ) {
+        entities {
+          ...ItemListing
+        }
+        pageIndex
+        pageSize
+        totalEntities
+        totalPages
+      }
+    }
+  }
+`);
+
 export const InventoryItemListingFragmentDocument = graphql(/* GraphQL */ `
   fragment InventoryItemListing on InventoryItem {
     name
@@ -37,7 +72,7 @@ export const InventoryWithItemsListingFragment = graphql(/* GraphQL */ `
   }
 `);
 
-export const inventoryWithItemsListingQueryDocument = graphql(`
+export const InventoryWithItemsListingQueryDocument = graphql(`
   query inventoryWithItemsListing(
     $name: String!
     $pageIndex: Int!
