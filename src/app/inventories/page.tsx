@@ -13,11 +13,13 @@ import { isEmpty, isNil } from "lodash";
 import { DEFAULT_PAGINATION_STATE } from "@/hooks/pagination/types";
 import { useState } from "react";
 import AddInventoryItemsSheet from "@/components/inventories/add-inventory-items-sheet";
+import { Button } from "@/components/ui/button";
 
 const DEFAULT_SORTING_STATE: SortingState = [{ id: "name", desc: false }];
 
 export default function Page() {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING_STATE);
+  const [isAddItemsOpen, setIsAddItemsOpen] = useState(false);
   const { data, refetch } = useSuspenseQuery(
     InventoryWithItemsListingQueryDocument,
     {
@@ -120,7 +122,12 @@ export default function Page() {
   return (
     <main>
       <div className="container mx-auto py-10">
-        <AddInventoryItemsSheet itemOptionsData={itemRespData} />
+        <Button onClick={() => setIsAddItemsOpen(true)}>Add Items</Button>
+        <AddInventoryItemsSheet
+          itemOptionsData={itemRespData}
+          open={isAddItemsOpen}
+          onOpenChange={() => setIsAddItemsOpen(false)}
+        />
         <DataTable
           columns={columns}
           data={inventoryItems}

@@ -5,23 +5,19 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { FragmentType, useFragment } from "@/gql";
 import { ItemListingFragmentDocument } from "@/app/inventories/graphql";
-import {
-  ItemListingFragment,
-  ItemsListingQuery,
-  PaginatedItemResponse,
-} from "@/gql/graphql";
+import { ItemListingFragment, ItemsListingQuery } from "@/gql/graphql";
 import { useState } from "react";
 import isNil from "lodash/isNil";
 
 import isEmpty from "lodash/isEmpty";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { DialogProps } from "@radix-ui/react-dialog";
 
 type InventoryItemOptionProps = {
   data: FragmentType<typeof ItemListingFragmentDocument>;
@@ -74,10 +70,12 @@ function InventoryItemAdditionOption({
 type AddInventoryItemsSheetProps = {
   // itemOptionsData: FragmentType<typeof ItemListingFragmentDocument>[];
   itemOptionsData: ItemsListingQuery;
-};
+} & DialogProps;
 
 export default function AddInventoryItemsSheet({
   itemOptionsData,
+  onOpenChange: handleOpenChange,
+  ...dialogProps
 }: AddInventoryItemsSheetProps) {
   const [itemsToAdd, setItemsToAdd] = useState<
     Record<string, ItemAdditionDescription>
@@ -126,9 +124,13 @@ export default function AddInventoryItemsSheet({
     setItemsToAdd({});
   }
 
+  function onOpenChange(isOpen: boolean) {
+    setItemsToAdd({});
+    handleOpenChange?.(isOpen);
+  }
+
   return (
-    <Sheet>
-      <SheetTrigger>Add items</SheetTrigger>
+    <Sheet {...dialogProps} onOpenChange={onOpenChange}>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Select items to add</SheetTitle>
