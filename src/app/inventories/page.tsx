@@ -5,7 +5,6 @@ import { PaginationState, SortingState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import {
   InventoryWithItemsListingFragment,
-  ItemListingFragment,
   InventoryWithItemsListingQueryDocument,
   ItemsListingQueryDocument,
 } from "./graphql";
@@ -13,14 +12,7 @@ import { useFragment } from "@/gql";
 import { isEmpty, isNil } from "lodash";
 import { DEFAULT_PAGINATION_STATE } from "@/hooks/pagination/types";
 import { useState } from "react";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import AddInventoryItemsSheet from "@/components/inventories/add-inventory-items-sheet";
 
 const DEFAULT_SORTING_STATE: SortingState = [{ id: "name", desc: false }];
 
@@ -68,8 +60,6 @@ export default function Page() {
       },
     },
   );
-
-  console.log("ITEM DATA ", itemRespData);
 
   const inventoryData = useFragment(
     InventoryWithItemsListingFragment,
@@ -130,21 +120,7 @@ export default function Page() {
   return (
     <main>
       <div className="container mx-auto py-10">
-        <Sheet>
-          <SheetTrigger>Add items</SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Are you absolutely sure?</SheetTitle>
-              <SheetDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
-                {itemRespData?.items?.getItems?.entities?.map((i) => (
-                  <div key={i.uuid}>{i.name}</div>
-                ))}
-              </SheetDescription>
-            </SheetHeader>
-          </SheetContent>
-        </Sheet>
+        <AddInventoryItemsSheet itemOptionsData={itemRespData} />
         <DataTable
           columns={columns}
           data={inventoryItems}
