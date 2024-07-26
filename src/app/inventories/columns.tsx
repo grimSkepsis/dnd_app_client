@@ -3,11 +3,11 @@
 import { FragmentType, useFragment } from "@/gql";
 import {} from "@/models/inventory-items/type";
 import { Column, ColumnDef, SortDirection } from "@tanstack/react-table";
-import { InventoryItemListingFragmentDocument } from "./graphql";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { isNil } from "lodash";
 import { InventoryItemListingFragment } from "@/gql/graphql";
+import { InventoryItemListingFragmentDocument } from "@/hooks/inventories/graphql";
 
 type CellRendererProps<T> = {
   rowData: FragmentType<typeof InventoryItemListingFragmentDocument>;

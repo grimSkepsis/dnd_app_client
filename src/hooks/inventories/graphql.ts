@@ -35,6 +35,17 @@ export const ItemsListingQueryDocument = graphql(`
   }
 `);
 
+export const AdjustItemQuantityMutationDocument = graphql(`
+  mutation adjustItemsForInventory(
+    $inventoryId: String!
+    $items: [InventoryItemQuantityAdjustmentParams!]!
+  ) {
+    inventoryItems {
+      addOrRemoveItemsFromInventory(inventoryId: $inventoryId, items: $items)
+    }
+  }
+`);
+
 export const InventoryItemListingFragmentDocument = graphql(/* GraphQL */ `
   fragment InventoryItemListing on InventoryItem {
     name

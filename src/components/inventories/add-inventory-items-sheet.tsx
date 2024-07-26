@@ -9,7 +9,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { FragmentType, useFragment } from "@/gql";
-import { ItemListingFragmentDocument } from "@/app/inventories/graphql";
 import { ItemListingFragment, ItemsListingQuery } from "@/gql/graphql";
 import { useState } from "react";
 import isNil from "lodash/isNil";
@@ -18,6 +17,7 @@ import isEmpty from "lodash/isEmpty";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { DialogProps } from "@radix-ui/react-dialog";
+import { ItemListingFragmentDocument } from "@/hooks/inventories/graphql";
 
 type InventoryItemOptionProps = {
   data: FragmentType<typeof ItemListingFragmentDocument>;
@@ -122,6 +122,7 @@ export default function AddInventoryItemsSheet({
   function onSubmitAddItems() {
     toast(`Items added ${calcTransationString()}`);
     setItemsToAdd({});
+    onOpenChange(false);
   }
 
   function onOpenChange(isOpen: boolean) {
@@ -134,7 +135,7 @@ export default function AddInventoryItemsSheet({
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Select items to add</SheetTitle>
-          <SheetDescription>
+          <div>
             <Input type="text" placeholder="Search..." />
             <ScrollArea className="h-48  rounded-md border">
               <div className="p-4">
@@ -159,15 +160,13 @@ export default function AddInventoryItemsSheet({
                 onClick={onRemoveItemFromTransaction}
               />
             ))}
-            <SheetClose>
-              <Button
-                disabled={isEmpty(Object.values(itemsToAdd))}
-                onClick={onSubmitAddItems}
-              >
-                Submit
-              </Button>
-            </SheetClose>
-          </SheetDescription>
+            <Button
+              disabled={isEmpty(Object.values(itemsToAdd))}
+              onClick={onSubmitAddItems}
+            >
+              Submit
+            </Button>
+          </div>
         </SheetHeader>
       </SheetContent>
     </Sheet>
