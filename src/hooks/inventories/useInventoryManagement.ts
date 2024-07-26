@@ -1,9 +1,10 @@
 import {
+  AdjustItemQuantityMutationDocument,
   InventoryWithItemsListingFragment,
   InventoryWithItemsListingQueryDocument,
   ItemsListingQueryDocument,
 } from "./graphql";
-import { useSuspenseQuery } from "@apollo/client";
+import { useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
 import { useState } from "react";
 import isEmpty from "lodash/isEmpty";
@@ -16,6 +17,10 @@ export default function useInventoryManagement() {
   const DEFAULT_SORTING_STATE: SortingState = [{ id: "name", desc: false }];
   const [inventoryItemsSorting, setInventoryItemsSorting] = useState(
     DEFAULT_SORTING_STATE,
+  );
+
+  const [adjustInventoryItemQuantity] = useMutation(
+    AdjustItemQuantityMutationDocument,
   );
 
   const { data: inventoryAndItemsData, refetch: refetchInventoryAndItemsData } =
@@ -100,7 +105,20 @@ export default function useInventoryManagement() {
     inventoryId: string,
     items: ItemQuantityAdjustmentDescription[],
   ) {
-    console.log("TRYING TO ADD ", inventoryId, items);
+    const res = await adjustInventoryItemQuantity({
+      variables: {
+        inventoryId,
+        items: items.map((item) => ({
+          itemId: item.item.uuid,
+          quantityChange: item.quantity,
+        })),
+      },
+    });
+    if (res?.data?.inventoryItems.addOrRemoveItemsFromInventory !== true) {
+      throw new Error("Failed to adjust inventory item quantity");
+    } else {
+      refetchInventoryAndItemsData();
+    }
   }
 
   return {
