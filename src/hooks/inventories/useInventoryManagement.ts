@@ -1,4 +1,5 @@
 import {
+  InventoryWithItemsListingFragment,
   InventoryWithItemsListingQueryDocument,
   ItemsListingQueryDocument,
 } from "./graphql";
@@ -6,6 +7,10 @@ import { useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
 import { useState } from "react";
 import isEmpty from "lodash/isEmpty";
+import { useFragment } from "@/gql";
+import { isNil } from "lodash";
+import { DEFAULT_PAGINATION_STATE } from "../pagination/types";
+import { ItemQuantityAdjustmentDescription } from "./types";
 
 export default function useInventoryManagement() {
   const DEFAULT_SORTING_STATE: SortingState = [{ id: "name", desc: false }];
@@ -32,6 +37,24 @@ export default function useInventoryManagement() {
         },
       },
     });
+
+  const inventoryAndItemsFragmentData = useFragment(
+    InventoryWithItemsListingFragment,
+    inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsByOwnerName,
+  );
+
+  const inventoryItemsPaginationState = isNil(
+    inventoryAndItemsFragmentData?.items,
+  )
+    ? DEFAULT_PAGINATION_STATE
+    : {
+        pageIndex: inventoryAndItemsFragmentData.items.pageIndex,
+        pageSize: inventoryAndItemsFragmentData.items.pageSize,
+        totalEntities: inventoryAndItemsFragmentData.items.totalEntities,
+        totalPages: inventoryAndItemsFragmentData.items.totalPages,
+      };
+
+  const inventoryItems = inventoryAndItemsFragmentData?.items?.entities ?? [];
 
   const { data: itemOptionsData, refetch: refetchItemOptions } =
     useSuspenseQuery(ItemsListingQueryDocument, {
@@ -73,10 +96,23 @@ export default function useInventoryManagement() {
     }
   }
 
+  async function onAdjustInventoryItemQuantity(
+    inventoryId: string,
+    items: ItemQuantityAdjustmentDescription[],
+  ) {
+    console.log("TRYING TO ADD ", inventoryId, items);
+  }
+
   return {
     inventoryItemsSorting,
     onInventoryItemsSortChange,
-    inventoryAndItemsData,
+    // inventoryAndItemsData,
+    inventoryName:
+      inventoryAndItemsFragmentData?.inventory?.name ?? "No Inventory Found",
+    inventoryId: inventoryAndItemsFragmentData?.inventory?.uuid ?? "",
+    onAdjustInventoryItemQuantity,
+    inventoryItems,
+    inventoryItemsPaginationState,
     refetchInventoryAndItemsData,
     itemOptionsData,
     refetchItemOptions,

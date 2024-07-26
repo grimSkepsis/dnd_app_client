@@ -18,6 +18,10 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { DialogProps } from "@radix-ui/react-dialog";
 import { ItemListingFragmentDocument } from "@/hooks/inventories/graphql";
+import {
+  InventoryItemAdjustmentCallback,
+  ItemQuantityAdjustmentDescription,
+} from "@/hooks/inventories/types";
 
 type InventoryItemOptionProps = {
   data: FragmentType<typeof ItemListingFragmentDocument>;
@@ -44,13 +48,9 @@ function InventoryItemOption({
   );
 }
 
-type ItemAdditionDescription = {
-  item: ItemListingFragment;
-  quantity: number;
-};
 type InventoryItemAdditionOptionProps = {
-  description: ItemAdditionDescription;
-  onClick: (description: ItemAdditionDescription) => void;
+  description: ItemQuantityAdjustmentDescription;
+  onClick: (description: ItemQuantityAdjustmentDescription) => void;
 };
 function InventoryItemAdditionOption({
   description,
@@ -68,17 +68,22 @@ function InventoryItemAdditionOption({
 }
 
 type AddInventoryItemsSheetProps = {
-  // itemOptionsData: FragmentType<typeof ItemListingFragmentDocument>[];
   itemOptionsData: ItemsListingQuery;
+  inventoryName: string;
+  inventoryId: string;
+  onAddItems: InventoryItemAdjustmentCallback;
 } & DialogProps;
 
 export default function AddInventoryItemsSheet({
   itemOptionsData,
   onOpenChange: handleOpenChange,
+  inventoryId,
+  inventoryName,
+  onAddItems,
   ...dialogProps
 }: AddInventoryItemsSheetProps) {
   const [itemsToAdd, setItemsToAdd] = useState<
-    Record<string, ItemAdditionDescription>
+    Record<string, ItemQuantityAdjustmentDescription>
   >({});
 
   function onAddItemToTransaction(newItem: ItemListingFragment) {
@@ -93,7 +98,7 @@ export default function AddInventoryItemsSheet({
   }
 
   function onRemoveItemFromTransaction(
-    descriptionToDecrement: ItemAdditionDescription,
+    descriptionToDecrement: ItemQuantityAdjustmentDescription,
   ) {
     if (descriptionToDecrement.quantity === 1) {
       setItemsToAdd((prev) => {
@@ -119,10 +124,15 @@ export default function AddInventoryItemsSheet({
       .join(", ");
   }
 
-  function onSubmitAddItems() {
-    toast(`Items added ${calcTransationString()}`);
-    setItemsToAdd({});
-    onOpenChange(false);
+  async function onSubmitAddItems() {
+    try {
+      await onAddItems(inventoryId, Object.values(itemsToAdd));
+      toast(`Items added ${calcTransationString()}`);
+      setItemsToAdd({});
+      onOpenChange(false);
+    } catch (e) {
+      toast(`There was an error adding your items`);
+    }
   }
 
   function onOpenChange(isOpen: boolean) {
@@ -134,7 +144,7 @@ export default function AddInventoryItemsSheet({
     <Sheet {...dialogProps} onOpenChange={onOpenChange}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Select items to add</SheetTitle>
+          <SheetTitle>Select items to add to {inventoryName}</SheetTitle>
           <div>
             <Input type="text" placeholder="Search..." />
             <ScrollArea className="h-48  rounded-md border">
