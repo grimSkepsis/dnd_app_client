@@ -48,6 +48,7 @@ export const AdjustItemQuantityMutationDocument = graphql(`
 
 export const InventoryItemListingFragmentDocument = graphql(/* GraphQL */ `
   fragment InventoryItemListing on InventoryItem {
+    uuid
     name
     value
     displayValue
@@ -57,6 +58,7 @@ export const InventoryItemListingFragmentDocument = graphql(/* GraphQL */ `
     bulk
     displayBulk
     level
+    isConsumable
   }
 `);
 

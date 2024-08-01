@@ -12,6 +12,7 @@ import { useFragment } from "@/gql";
 import { isNil } from "lodash";
 import { DEFAULT_PAGINATION_STATE } from "../pagination/types";
 import { ItemQuantityAdjustmentDescription } from "./types";
+import { InventoryItemQuantityAdjustmentParams } from "@/gql/graphql";
 
 export default function useInventoryManagement() {
   const DEFAULT_SORTING_STATE: SortingState = [{ id: "name", desc: false }];
@@ -103,15 +104,12 @@ export default function useInventoryManagement() {
 
   async function onAdjustInventoryItemQuantity(
     inventoryId: string,
-    items: ItemQuantityAdjustmentDescription[],
+    items: InventoryItemQuantityAdjustmentParams[],
   ) {
     const res = await adjustInventoryItemQuantity({
       variables: {
         inventoryId,
-        items: items.map((item) => ({
-          itemId: item.item.uuid,
-          quantityChange: item.quantity,
-        })),
+        items,
       },
     });
     if (res?.data?.inventoryItems.addOrRemoveItemsFromInventory !== true) {
@@ -121,6 +119,25 @@ export default function useInventoryManagement() {
     }
   }
 
+  async function onAddItems(
+    inventoryId: string,
+    items: ItemQuantityAdjustmentDescription[],
+  ) {
+    await onAdjustInventoryItemQuantity(
+      inventoryId,
+      items.map((item) => ({
+        itemId: item.item.uuid,
+        quantityChange: item.quantity,
+      })),
+    );
+  }
+
+  async function onUseItem(inventoryId: string, itemId: string) {
+    onAdjustInventoryItemQuantity(inventoryId, [
+      { itemId, quantityChange: -1 },
+    ]);
+  }
+
   return {
     inventoryItemsSorting,
     onInventoryItemsSortChange,
@@ -128,11 +145,13 @@ export default function useInventoryManagement() {
     inventoryName:
       inventoryAndItemsFragmentData?.inventory?.name ?? "No Inventory Found",
     inventoryId: inventoryAndItemsFragmentData?.inventory?.uuid ?? "",
-    onAdjustInventoryItemQuantity,
+    onAddItems,
+    onUseItem,
     inventoryItems,
     inventoryItemsPaginationState,
     refetchInventoryAndItemsData,
     itemOptionsData,
     refetchItemOptions,
+    onAdjustInventoryItemQuantity,
   };
 }

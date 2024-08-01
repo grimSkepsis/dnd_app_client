@@ -1,11 +1,12 @@
 "use client";
-import { columns } from "./columns";
+import { getInventoryColumns } from "./columns";
 import { PaginationState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import { useState } from "react";
 import AddInventoryItemsSheet from "@/components/inventories/add-inventory-items-sheet";
 import { Button } from "@/components/ui/button";
 import useInventoryManagement from "@/hooks/inventories/useInventoryManagement";
+import partial from "lodash/partial";
 
 export default function Page() {
   const [isAddItemsOpen, setIsAddItemsOpen] = useState(false);
@@ -19,7 +20,8 @@ export default function Page() {
     inventoryItems,
     inventoryId,
     inventoryName,
-    onAdjustInventoryItemQuantity,
+    onAddItems,
+    onUseItem,
   } = useInventoryManagement();
 
   function onPaginationChange(state: Updater<PaginationState>) {
@@ -51,13 +53,13 @@ export default function Page() {
         <AddInventoryItemsSheet
           inventoryId={inventoryId}
           inventoryName={inventoryName}
-          onAddItems={onAdjustInventoryItemQuantity}
+          onAddItems={onAddItems}
           itemOptionsData={itemOptionsData}
           open={isAddItemsOpen}
           onOpenChange={() => setIsAddItemsOpen(false)}
         />
         <DataTable
-          columns={columns}
+          columns={getInventoryColumns(partial(onUseItem, inventoryId))}
           data={inventoryItems}
           sortingState={inventoryItemsSorting}
           onPaginationChange={onPaginationChange}
