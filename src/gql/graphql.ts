@@ -29,20 +29,20 @@ export type Inventory = {
 
 export type InventoryItem = {
   __typename?: 'InventoryItem';
-  activationCost: Scalars['String']['output'];
-  bulk: Scalars['Float']['output'];
-  description: Scalars['String']['output'];
-  displayBulk: Scalars['String']['output'];
-  displayValue: Scalars['String']['output'];
-  effect: Scalars['String']['output'];
+  activationCost?: Maybe<Scalars['String']['output']>;
+  bulk?: Maybe<Scalars['Float']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  displayBulk?: Maybe<Scalars['String']['output']>;
+  displayValue?: Maybe<Scalars['String']['output']>;
+  effect?: Maybe<Scalars['String']['output']>;
   isConsumable: Scalars['Boolean']['output'];
-  level: Scalars['Int']['output'];
+  level?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
   quantity: Scalars['Int']['output'];
-  traits: Array<Scalars['String']['output']>;
-  usageRequirements: Scalars['String']['output'];
+  traits?: Maybe<Array<Scalars['String']['output']>>;
+  usageRequirements?: Maybe<Scalars['String']['output']>;
   uuid: Scalars['ID']['output'];
-  value: Scalars['Int']['output'];
+  value?: Maybe<Scalars['Int']['output']>;
 };
 
 export type InventoryItemMutation = {
@@ -127,19 +127,19 @@ export type InventoryWithItemsQueryGetInventoryWithItemsByOwnerNameArgs = {
 
 export type Item = {
   __typename?: 'Item';
-  activationCost: Scalars['String']['output'];
-  bulk: Scalars['Float']['output'];
-  description: Scalars['String']['output'];
-  displayBulk: Scalars['String']['output'];
-  displayValue: Scalars['String']['output'];
-  effect: Scalars['String']['output'];
+  activationCost?: Maybe<Scalars['String']['output']>;
+  bulk?: Maybe<Scalars['Float']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  displayBulk?: Maybe<Scalars['String']['output']>;
+  displayValue?: Maybe<Scalars['String']['output']>;
+  effect?: Maybe<Scalars['String']['output']>;
   isConsumable: Scalars['Boolean']['output'];
-  level: Scalars['Int']['output'];
+  level?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
-  traits: Array<Scalars['String']['output']>;
-  usageRequirements: Scalars['String']['output'];
+  traits?: Maybe<Array<Scalars['String']['output']>>;
+  usageRequirements?: Maybe<Scalars['String']['output']>;
   uuid: Scalars['ID']['output'];
-  value: Scalars['Int']['output'];
+  value?: Maybe<Scalars['Int']['output']>;
 };
 
 export type ItemQuery = {
@@ -217,7 +217,7 @@ export type AdjustItemsForInventoryMutationVariables = Exact<{
 
 export type AdjustItemsForInventoryMutation = { __typename?: 'MutationRoot', inventoryItems: { __typename?: 'InventoryItemMutation', addOrRemoveItemsFromInventory: boolean } };
 
-export type InventoryItemListingFragment = { __typename?: 'InventoryItem', uuid: string, name: string, value: number, displayValue: string, quantity: number, traits: Array<string>, description: string, bulk: number, displayBulk: string, level: number, isConsumable: boolean } & { ' $fragmentName'?: 'InventoryItemListingFragment' };
+export type InventoryItemListingFragment = { __typename?: 'InventoryItem', uuid: string, name: string, value?: number | null, displayValue?: string | null, quantity: number, traits?: Array<string> | null, description?: string | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean } & { ' $fragmentName'?: 'InventoryItemListingFragment' };
 
 export type InventoryWithItemsListingFragment = { __typename?: 'InventoryWithItems', inventory: { __typename?: 'Inventory', uuid: string, name: string, cp: number, sp: number, gp: number, pp: number }, items: { __typename?: 'PaginatedInventoryItemResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<(
       { __typename?: 'InventoryItem' }

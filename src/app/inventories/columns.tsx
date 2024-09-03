@@ -85,7 +85,7 @@ export function getInventoryColumns(
         return (
           <CellRenderer<InventoryItemListingFragment>
             rowData={props.row.original}
-            getDisplayValue={(data) => data.displayBulk}
+            getDisplayValue={(data) => data.displayBulk ?? "???"}
           />
         );
       },
@@ -97,7 +97,7 @@ export function getInventoryColumns(
         return (
           <CellRenderer<InventoryItemListingFragment>
             rowData={props.row.original}
-            getDisplayValue={(data) => data.displayValue}
+            getDisplayValue={(data) => data.displayValue ?? "???"}
           />
         );
       },
@@ -115,7 +115,7 @@ export function getInventoryColumns(
         return (
           <CellRenderer<InventoryItemListingFragment>
             rowData={props.row.original}
-            getDisplayValue={(data) => data.traits.join(", ")}
+            getDisplayValue={(data) => data.traits?.join(", ") ?? "???"}
           />
         );
       },
