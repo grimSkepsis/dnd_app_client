@@ -35,6 +35,35 @@ export const ItemsListingQueryDocument = graphql(`
   }
 `);
 
+export const ItemDetailsFragmentDocument = graphql(/* GraphQL */ `
+  fragment ItemDetails on Item {
+    uuid
+    name
+    value
+    displayValue
+    description
+    activationCost
+    usageRequirements
+    effect
+    traits
+    description
+    bulk
+    displayBulk
+    level
+    isConsumable
+  }
+`);
+
+export const ItemDetailsQueryDocument = graphql(`
+  query itemDetails($id: String!) {
+    items {
+      getItem(id: $id) {
+        ...ItemDetails
+      }
+    }
+  }
+`);
+
 export const AdjustItemQuantityMutationDocument = graphql(`
   mutation adjustItemsForInventory(
     $inventoryId: String!

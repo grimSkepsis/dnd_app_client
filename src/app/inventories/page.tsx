@@ -23,6 +23,7 @@ export default function Page() {
     onAddItems,
     onUseItem,
     onQuickCreateItem,
+    onViewItemDetails: handleViewItemDetails,
   } = useInventoryManagement();
 
   function onPaginationChange(state: Updater<PaginationState>) {
@@ -47,6 +48,11 @@ export default function Page() {
     });
   }
 
+  function onViewItemDetails(itemId: string) {
+    console.log("onViewItemDetails", itemId);
+    handleViewItemDetails(itemId);
+  }
+
   return (
     <main>
       <div className="container mx-auto py-10">
@@ -63,6 +69,7 @@ export default function Page() {
         <DataTable
           columns={getInventoryColumns(partial(onUseItem, inventoryId))}
           data={inventoryItems}
+          onRowClick={(row) => void onViewItemDetails(row.uuid)}
           sortingState={inventoryItemsSorting}
           onPaginationChange={onPaginationChange}
           onSortingChange={onInventoryItemsSortChange}

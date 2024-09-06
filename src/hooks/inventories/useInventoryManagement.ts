@@ -2,10 +2,11 @@ import {
   AdjustItemQuantityMutationDocument,
   InventoryWithItemsListingFragment,
   InventoryWithItemsListingQueryDocument,
+  ItemDetailsQueryDocument,
   ItemsListingQueryDocument,
   QuickCreateItemMutationDocument,
 } from "./graphql";
-import { useMutation, useSuspenseQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
 import { useState } from "react";
 import isEmpty from "lodash/isEmpty";
@@ -27,12 +28,16 @@ export default function useInventoryManagement() {
 
   const [quickCreateItem] = useMutation(QuickCreateItemMutationDocument);
 
+  const [getDetailedItem, { loading, data, error }] = useLazyQuery(
+    ItemDetailsQueryDocument,
+  );
+
   const { data: inventoryAndItemsData, refetch: refetchInventoryAndItemsData } =
     useSuspenseQuery(InventoryWithItemsListingQueryDocument, {
       variables: {
         name: "Thorrun",
         pageIndex: 0,
-        pageSize: 2,
+        pageSize: 10,
         orderBy: DEFAULT_SORTING_STATE[0].id,
         orderDirection: DEFAULT_SORTING_STATE[0].desc ? "DESC" : "ASC",
         filter: {
@@ -149,6 +154,10 @@ export default function useInventoryManagement() {
     ]);
   }
 
+  async function onViewItemDetails(id: string) {
+    getDetailedItem({ variables: { id } });
+  }
+
   return {
     inventoryItemsSorting,
     onInventoryItemsSortChange,
@@ -165,5 +174,6 @@ export default function useInventoryManagement() {
     refetchItemOptions,
     onAdjustInventoryItemQuantity,
     onQuickCreateItem,
+    onViewItemDetails,
   };
 }

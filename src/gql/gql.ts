@@ -15,6 +15,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  fragment ItemListing on Item {\n    uuid\n    name\n  }\n": types.ItemListingFragmentDoc,
     "\n  query itemsListing(\n    $pageIndex: Int!\n    $pageSize: Int!\n    $orderBy: String!\n    $orderDirection: String!\n    $filter: ItemQueryFilter!\n  ) {\n    items {\n      getItems(\n        pageIndex: $pageIndex\n        pageSize: $pageSize\n        orderBy: $orderBy\n        orderDirection: $orderDirection\n        filter: $filter\n      ) {\n        entities {\n          ...ItemListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n": types.ItemsListingDocument,
+    "\n  fragment ItemDetails on Item {\n    uuid\n    name\n    value\n    displayValue\n    description\n    activationCost\n    usageRequirements\n    effect\n    traits\n    description\n    bulk\n    displayBulk\n    level\n    isConsumable\n  }\n": types.ItemDetailsFragmentDoc,
+    "\n  query itemDetails($id: String!) {\n    items {\n      getItem(id: $id) {\n        ...ItemDetails\n      }\n    }\n  }\n": types.ItemDetailsDocument,
     "\n  mutation adjustItemsForInventory(\n    $inventoryId: String!\n    $items: [InventoryItemQuantityAdjustmentParams!]!\n  ) {\n    inventoryItems {\n      addOrRemoveItemsFromInventory(inventoryId: $inventoryId, items: $items)\n    }\n  }\n": types.AdjustItemsForInventoryDocument,
     "\n  mutation quickCreateItem($name: String!) {\n    items {\n      createItem(params: { name: $name }) {\n        name\n      }\n    }\n  }\n": types.QuickCreateItemDocument,
     "\n  fragment InventoryItemListing on InventoryItem {\n    uuid\n    name\n    value\n    displayValue\n    quantity\n    traits\n    description\n    bulk\n    displayBulk\n    level\n    isConsumable\n  }\n": types.InventoryItemListingFragmentDoc,
@@ -44,6 +46,14 @@ export function graphql(source: "\n  fragment ItemListing on Item {\n    uuid\n 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query itemsListing(\n    $pageIndex: Int!\n    $pageSize: Int!\n    $orderBy: String!\n    $orderDirection: String!\n    $filter: ItemQueryFilter!\n  ) {\n    items {\n      getItems(\n        pageIndex: $pageIndex\n        pageSize: $pageSize\n        orderBy: $orderBy\n        orderDirection: $orderDirection\n        filter: $filter\n      ) {\n        entities {\n          ...ItemListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n"): (typeof documents)["\n  query itemsListing(\n    $pageIndex: Int!\n    $pageSize: Int!\n    $orderBy: String!\n    $orderDirection: String!\n    $filter: ItemQueryFilter!\n  ) {\n    items {\n      getItems(\n        pageIndex: $pageIndex\n        pageSize: $pageSize\n        orderBy: $orderBy\n        orderDirection: $orderDirection\n        filter: $filter\n      ) {\n        entities {\n          ...ItemListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment ItemDetails on Item {\n    uuid\n    name\n    value\n    displayValue\n    description\n    activationCost\n    usageRequirements\n    effect\n    traits\n    description\n    bulk\n    displayBulk\n    level\n    isConsumable\n  }\n"): (typeof documents)["\n  fragment ItemDetails on Item {\n    uuid\n    name\n    value\n    displayValue\n    description\n    activationCost\n    usageRequirements\n    effect\n    traits\n    description\n    bulk\n    displayBulk\n    level\n    isConsumable\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query itemDetails($id: String!) {\n    items {\n      getItem(id: $id) {\n        ...ItemDetails\n      }\n    }\n  }\n"): (typeof documents)["\n  query itemDetails($id: String!) {\n    items {\n      getItem(id: $id) {\n        ...ItemDetails\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
