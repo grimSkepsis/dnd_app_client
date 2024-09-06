@@ -3,6 +3,7 @@ import {
   InventoryWithItemsListingFragment,
   InventoryWithItemsListingQueryDocument,
   ItemsListingQueryDocument,
+  QuickCreateItemMutationDocument,
 } from "./graphql";
 import { useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
@@ -23,6 +24,8 @@ export default function useInventoryManagement() {
   const [adjustInventoryItemQuantity] = useMutation(
     AdjustItemQuantityMutationDocument,
   );
+
+  const [quickCreateItem] = useMutation(QuickCreateItemMutationDocument);
 
   const { data: inventoryAndItemsData, refetch: refetchInventoryAndItemsData } =
     useSuspenseQuery(InventoryWithItemsListingQueryDocument, {
@@ -132,6 +135,14 @@ export default function useInventoryManagement() {
     );
   }
 
+  async function onQuickCreateItem(name: string) {
+    await quickCreateItem({
+      variables: {
+        name,
+      },
+    });
+  }
+
   async function onUseItem(inventoryId: string, itemId: string) {
     onAdjustInventoryItemQuantity(inventoryId, [
       { itemId, quantityChange: -1 },
@@ -153,5 +164,6 @@ export default function useInventoryManagement() {
     itemOptionsData,
     refetchItemOptions,
     onAdjustInventoryItemQuantity,
+    onQuickCreateItem,
   };
 }

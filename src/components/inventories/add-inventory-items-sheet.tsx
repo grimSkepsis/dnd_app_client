@@ -72,6 +72,7 @@ type AddInventoryItemsSheetProps = {
   inventoryName: string;
   inventoryId: string;
   onAddItems: InventoryItemAdjustmentCallback;
+  onCreateItem: (name: string) => Promise<void>;
 } & DialogProps;
 
 export default function AddInventoryItemsSheet({
@@ -80,11 +81,14 @@ export default function AddInventoryItemsSheet({
   inventoryId,
   inventoryName,
   onAddItems,
+  onCreateItem: handleCreateItem,
   ...dialogProps
 }: AddInventoryItemsSheetProps) {
   const [itemsToAdd, setItemsToAdd] = useState<
     Record<string, ItemQuantityAdjustmentDescription>
   >({});
+
+  const [newItemName, setNewItemName] = useState<string>("");
 
   function onAddItemToTransaction(newItem: ItemListingFragment) {
     const previousQuantity = itemsToAdd[newItem.uuid]?.quantity ?? 0;
@@ -140,6 +144,16 @@ export default function AddInventoryItemsSheet({
     handleOpenChange?.(isOpen);
   }
 
+  async function onCreateItem() {
+    try {
+      await handleCreateItem(newItemName);
+      toast(`Item created successfully!`);
+    } catch (e) {
+      toast(`There was an error creating the item`);
+    }
+    setNewItemName("");
+  }
+
   return (
     <Sheet {...dialogProps} onOpenChange={onOpenChange}>
       <SheetContent>
@@ -175,6 +189,18 @@ export default function AddInventoryItemsSheet({
               onClick={onSubmitAddItems}
             >
               Submit
+            </Button>
+            <Input
+              type="text"
+              placeholder="Enter new item name..."
+              value={newItemName}
+              onChange={(e) => setNewItemName(e.target.value)}
+            />
+            <Button
+              disabled={isEmpty(newItemName)}
+              onClick={() => void onCreateItem()}
+            >
+              Create
             </Button>
           </div>
         </SheetHeader>

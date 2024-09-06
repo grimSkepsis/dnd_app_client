@@ -46,6 +46,16 @@ export const AdjustItemQuantityMutationDocument = graphql(`
   }
 `);
 
+export const QuickCreateItemMutationDocument = graphql(`
+  mutation quickCreateItem($name: String!) {
+    items {
+      createItem(params: { name: $name }) {
+        name
+      }
+    }
+  }
+`);
+
 export const InventoryItemListingFragmentDocument = graphql(/* GraphQL */ `
   fragment InventoryItemListing on InventoryItem {
     uuid

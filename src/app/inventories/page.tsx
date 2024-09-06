@@ -22,6 +22,7 @@ export default function Page() {
     inventoryName,
     onAddItems,
     onUseItem,
+    onQuickCreateItem,
   } = useInventoryManagement();
 
   function onPaginationChange(state: Updater<PaginationState>) {
@@ -51,6 +52,7 @@ export default function Page() {
       <div className="container mx-auto py-10">
         <Button onClick={() => setIsAddItemsOpen(true)}>Add Items</Button>
         <AddInventoryItemsSheet
+          onCreateItem={onQuickCreateItem}
           inventoryId={inventoryId}
           inventoryName={inventoryName}
           onAddItems={onAddItems}
