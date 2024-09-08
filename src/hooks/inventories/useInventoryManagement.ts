@@ -28,9 +28,14 @@ export default function useInventoryManagement() {
 
   const [quickCreateItem] = useMutation(QuickCreateItemMutationDocument);
 
-  const [getDetailedItem, { loading, data, error }] = useLazyQuery(
-    ItemDetailsQueryDocument,
-  );
+  const [
+    getDetailedItem,
+    {
+      loading: itemDetailsLoading,
+      data: itemDetailsData,
+      error: itemDetailsError,
+    },
+  ] = useLazyQuery(ItemDetailsQueryDocument);
 
   const { data: inventoryAndItemsData, refetch: refetchInventoryAndItemsData } =
     useSuspenseQuery(InventoryWithItemsListingQueryDocument, {
@@ -175,5 +180,7 @@ export default function useInventoryManagement() {
     onAdjustInventoryItemQuantity,
     onQuickCreateItem,
     onViewItemDetails,
+    itemDetailsLoading,
+    itemDetailsData,
   };
 }

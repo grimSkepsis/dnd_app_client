@@ -7,9 +7,11 @@ import AddInventoryItemsSheet from "@/components/inventories/add-inventory-items
 import { Button } from "@/components/ui/button";
 import useInventoryManagement from "@/hooks/inventories/useInventoryManagement";
 import partial from "lodash/partial";
+import ItemDetailsSheet from "@/components/inventories/item-details-sheet";
 
 export default function Page() {
   const [isAddItemsOpen, setIsAddItemsOpen] = useState(false);
+  const [isItemDetailsOpen, setIsItemDetailsOpen] = useState(false);
 
   const {
     refetchInventoryAndItemsData,
@@ -24,6 +26,8 @@ export default function Page() {
     onUseItem,
     onQuickCreateItem,
     onViewItemDetails: handleViewItemDetails,
+    itemDetailsData,
+    itemDetailsLoading,
   } = useInventoryManagement();
 
   function onPaginationChange(state: Updater<PaginationState>) {
@@ -49,7 +53,7 @@ export default function Page() {
   }
 
   function onViewItemDetails(itemId: string) {
-    console.log("onViewItemDetails", itemId);
+    setIsItemDetailsOpen(true);
     handleViewItemDetails(itemId);
   }
 
@@ -65,6 +69,12 @@ export default function Page() {
           itemOptionsData={itemOptionsData}
           open={isAddItemsOpen}
           onOpenChange={() => setIsAddItemsOpen(false)}
+        />
+        <ItemDetailsSheet
+          open={isItemDetailsOpen}
+          onOpenChange={() => setIsItemDetailsOpen(false)}
+          data={itemDetailsData}
+          isLoading={itemDetailsLoading}
         />
         <DataTable
           columns={getInventoryColumns(partial(onUseItem, inventoryId))}
