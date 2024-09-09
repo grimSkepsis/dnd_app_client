@@ -35,6 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { MultiComboBox } from "../ui/multi-combobox";
 
 const ActivationActionCostEnum = z.enum([
   "n/a",
@@ -121,7 +122,7 @@ export default function ItemDetailsSheet({
             <>
               <SheetTitle>{data.name}</SheetTitle>
               <SheetDescription>{data.description}</SheetDescription>
-
+              <MultiComboBox container={dialogRef?.current} />
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
@@ -291,6 +292,7 @@ export default function ItemDetailsSheet({
                       </FormItem>
                     )}
                   />
+
                   <Button type="submit">Submit</Button>
                 </form>
               </Form>
