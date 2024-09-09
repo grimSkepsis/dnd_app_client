@@ -36,6 +36,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { MultiComboBox } from "../ui/multi-combobox";
+import { Option } from "@/types/form";
 
 const ActivationActionCostEnum = z.enum([
   "n/a",
@@ -65,16 +66,19 @@ const formSchema = z.object({
   effect: z.string().min(0).max(500),
   bulk: z.number().min(0),
   level: z.number().min(0),
+  traits: z.array(z.string()),
 });
 
 type ItemDetailsSheetProps = {
   data?: ItemDetailsQuery;
+  traitOptions: Option[];
   isLoading: boolean;
 } & DialogProps;
 
 export default function ItemDetailsSheet({
   onOpenChange: handleOpenChange,
   data: rawData,
+  traitOptions,
   ...dialogProps
 }: ItemDetailsSheetProps) {
   const data = useFragment(
@@ -82,7 +86,7 @@ export default function ItemDetailsSheet({
     rawData?.items?.getItem,
   );
 
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(undefined);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -99,6 +103,7 @@ export default function ItemDetailsSheet({
       effect: data?.effect ?? "",
       bulk: data?.bulk ?? 0,
       level: data?.level ?? 0,
+      traits: data?.traits ?? [],
     });
   }, [data]);
 
@@ -112,6 +117,14 @@ export default function ItemDetailsSheet({
     handleOpenChange?.(isOpen);
   }
 
+  function onAddTrait() {
+    // Add a new trait to the item
+  }
+
+  function onRemoveTrait() {
+    // Remove a trait from the item
+  }
+
   return (
     <Sheet {...dialogProps} onOpenChange={onOpenChange}>
       <SheetContent ref={dialogRef}>
@@ -122,12 +135,52 @@ export default function ItemDetailsSheet({
             <>
               <SheetTitle>{data.name}</SheetTitle>
               <SheetDescription>{data.description}</SheetDescription>
-              <MultiComboBox container={dialogRef?.current} />
+
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-8"
                 >
+                  <FormField
+                    control={form.control}
+                    name="traits"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Traits</FormLabel>
+                        {/* <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+
+                          <SelectContent container={dialogRef?.current}>
+                            {Object.entries(ACTIVATION_ACTION_COST_OPTIONS).map(
+                              ([key, value]) => (
+                                <SelectItem key={key} value={key}>
+                                  {value}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select> */}
+                        <FormControl>
+                          <div>
+                            <MultiComboBox
+                              placeholder="No traits set"
+                              container={dialogRef?.current}
+                              onChange={field.onChange}
+                              defaultValues={field.value}
+                              options={traitOptions}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          The traits that the item has
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="name"

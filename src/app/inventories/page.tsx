@@ -28,6 +28,7 @@ export default function Page() {
     onViewItemDetails: handleViewItemDetails,
     itemDetailsData,
     itemDetailsLoading,
+    traitOptions,
   } = useInventoryManagement();
 
   function onPaginationChange(state: Updater<PaginationState>) {
@@ -75,6 +76,7 @@ export default function Page() {
           onOpenChange={() => setIsItemDetailsOpen(false)}
           data={itemDetailsData}
           isLoading={itemDetailsLoading}
+          traitOptions={traitOptions}
         />
         <DataTable
           columns={getInventoryColumns(partial(onUseItem, inventoryId))}

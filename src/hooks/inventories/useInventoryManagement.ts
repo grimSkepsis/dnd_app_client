@@ -182,5 +182,15 @@ export default function useInventoryManagement() {
     onViewItemDetails,
     itemDetailsLoading,
     itemDetailsData,
+    traitOptions: [
+      "Consumable",
+      "Portion",
+      "Magical",
+      "Vitality",
+      "Healing",
+      "Toolkit",
+    ]
+      .sort((a, b) => a.localeCompare(b))
+      .map((trait) => ({ value: trait, label: trait })),
   };
 }
