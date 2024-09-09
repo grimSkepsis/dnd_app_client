@@ -27,7 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Select,
   SelectContent,
@@ -81,6 +81,8 @@ export default function ItemDetailsSheet({
     rawData?.items?.getItem,
   );
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     // defaultValues: {},
@@ -111,7 +113,7 @@ export default function ItemDetailsSheet({
 
   return (
     <Sheet {...dialogProps} onOpenChange={onOpenChange}>
-      <SheetContent>
+      <SheetContent ref={dialogRef}>
         <SheetHeader>
           {isNil(data) ? (
             <SheetTitle>Loading item details...</SheetTitle>
@@ -195,7 +197,7 @@ export default function ItemDetailsSheet({
                               <SelectValue placeholder="No cost selected" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent container={dialogRef?.current}>
                             {Object.entries(ACTIVATION_ACTION_COST_OPTIONS).map(
                               ([key, value]) => (
                                 <SelectItem key={key} value={key}>
