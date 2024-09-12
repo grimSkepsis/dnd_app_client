@@ -97,7 +97,6 @@ export function ItemDetailsForm({
   });
 
   useEffect(() => {
-    console.log("DATA ", data);
     form.reset({
       name: data?.name ?? "",
       description: data?.description ?? "",
@@ -139,25 +138,6 @@ export function ItemDetailsForm({
         />
         <FormField
           control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Write your description here..."
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                The flavor text/mechanical description for the item
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="value"
           render={({ field }) => (
             <FormItem>
@@ -168,68 +148,6 @@ export function ItemDetailsForm({
               <FormDescription>
                 The value of the item in gold pieces
               </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="activationCost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Activation cost</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="No cost selected" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent container={parentRef?.current}>
-                  {Object.entries(ACTIVATION_ACTION_COST_OPTIONS).map(
-                    ([value, label]) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
-                      </SelectItem>
-                    ),
-                  )}
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                The action cost to activate the item
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="usageRequirements"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Usage requirements</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Write the requirements here..."
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Requirements to use the item, if any
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="effect"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Effect</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Write the effect here..." {...field} />
-              </FormControl>
-              <FormDescription>Item effects, if any</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -283,6 +201,90 @@ export function ItemDetailsForm({
                 </div>
               </FormControl>
               <FormDescription>The traits that the item has</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="activationCost"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Activation cost</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="No cost selected" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent container={parentRef?.current}>
+                  {Object.entries(ACTIVATION_ACTION_COST_OPTIONS).map(
+                    ([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ),
+                  )}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                The action cost to activate the item, if any
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="usageRequirements"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Usage requirements</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write the requirements here..."
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Requirements to use the item, if any
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write your description here..."
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                The flavor text/mechanical description for the item
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="effect"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Effect</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Write the effect here..." {...field} />
+              </FormControl>
+              <FormDescription>Item effects, if any</FormDescription>
               <FormMessage />
             </FormItem>
           )}
