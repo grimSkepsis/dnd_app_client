@@ -21,6 +21,7 @@ import {
 import { Input } from "./input";
 import { Option } from "@/types/form";
 import isEmpty from "lodash/isEmpty";
+import { Tag } from "./tag";
 
 const frameworks = [
   {
@@ -92,21 +93,14 @@ export function MultiComboBox({
           {isEmpty(values)
             ? placeholder
             : values.map((v) => (
-                <span
-                  className="rounded-lg bg-primary px-2 py-1 text-xs text-primary-foreground flex"
+                <Tag
+                  label={displayValueMap.get(v) ?? v}
                   key={v}
-                >
-                  {displayValueMap.get(v) ?? v}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setValues(values.filter((value) => value !== v));
-                    }}
-                    className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </span>
+                  onRemove={(e) => {
+                    e.stopPropagation();
+                    setValues(values.filter((value) => value !== v));
+                  }}
+                />
               ))}
         </div>
       </PopoverTrigger>

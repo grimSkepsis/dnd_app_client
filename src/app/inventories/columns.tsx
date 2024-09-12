@@ -10,6 +10,7 @@ import { InventoryItemListingFragment } from "@/gql/graphql";
 import { InventoryItemListingFragmentDocument } from "@/hooks/inventories/graphql";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Tag } from "@/components/ui/tag";
 
 type CellRendererProps<T> = {
   rowData: FragmentType<typeof InventoryItemListingFragmentDocument>;
@@ -115,7 +116,13 @@ export function getInventoryColumns(
         return (
           <CellRenderer<InventoryItemListingFragment>
             rowData={props.row.original}
-            getDisplayValue={(data) => data.traits?.join(", ") ?? "???"}
+            getDisplayValue={(data) =>
+              (
+                <div className="flex flex-wrap gap-2">
+                  {data.traits?.map((t) => <Tag key={t} label={t} />)}{" "}
+                </div>
+              ) ?? "???"
+            }
           />
         );
       },

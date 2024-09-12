@@ -16,6 +16,7 @@ import { useRef, useState } from "react";
 import { Option } from "@/types/form";
 import { ItemDetailsForm } from "./item-details-form";
 import { Pencil } from "lucide-react";
+import { Tag } from "@/components/ui/tag";
 
 type ItemDetailsSheetProps = {
   data?: ItemDetailsQuery;
@@ -55,9 +56,9 @@ export default function ItemDetailsSheet({
             <SheetTitle>Loading item details...</SheetTitle>
           ) : (
             <>
-              <SheetTitle>
-                {data.name}{" "}
-                {!isEditing && (
+              {!isEditing && (
+                <SheetTitle>
+                  {data.name}{" "}
                   <button
                     onClick={(e) => {
                       setIsEditing(true);
@@ -66,9 +67,34 @@ export default function ItemDetailsSheet({
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
-                )}
-              </SheetTitle>
-              <SheetDescription>{data.description}</SheetDescription>
+                </SheetTitle>
+              )}
+              {!isEditing && (
+                <div className="flex gap-5 flex-col">
+                  <div className="flex gap-2 flex-col">
+                    <SheetDescription>
+                      Price: {data.displayValue}, Bulk: {data.displayBulk}, Item
+                      Level: {data.level}
+                    </SheetDescription>
+
+                    <div className="flex flex-wrap gap-2">
+                      {data?.traits?.map((t) => <Tag key={t} label={t} />)}
+                    </div>
+                  </div>
+                  <SheetDescription>
+                    {!isNil(data.usageRequirements) && (
+                      <>
+                        Usage: {data.usageRequirements}, {data.activationCost}
+                      </>
+                    )}
+                  </SheetDescription>
+                  <SheetDescription>{data.description}</SheetDescription>
+                  <div>
+                    <p>{data.effect}</p>
+                  </div>
+                </div>
+              )}
+
               {isEditing && (
                 <ItemDetailsForm
                   data={data}
@@ -78,7 +104,6 @@ export default function ItemDetailsSheet({
                   onSubmit={onSubmit}
                 />
               )}
-
               <SheetClose />
             </>
           )}
