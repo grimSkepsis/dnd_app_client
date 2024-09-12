@@ -11,8 +11,8 @@ import { ItemDetailsFragmentDocument } from "@/hooks/inventories/graphql";
 import { useFragment } from "@/gql";
 import isNil from "lodash/isNil";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,8 +34,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { MultiComboBox } from "../ui/multi-combobox";
+} from "@/components/ui/select";
+import { MultiComboBox } from "@/components/ui/multi-combobox";
 import { Option } from "@/types/form";
 
 const ActivationActionCostEnum = z.enum([
@@ -141,46 +141,6 @@ export default function ItemDetailsSheet({
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-8"
                 >
-                  <FormField
-                    control={form.control}
-                    name="traits"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Traits</FormLabel>
-                        {/* <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-
-                          <SelectContent container={dialogRef?.current}>
-                            {Object.entries(ACTIVATION_ACTION_COST_OPTIONS).map(
-                              ([key, value]) => (
-                                <SelectItem key={key} value={key}>
-                                  {value}
-                                </SelectItem>
-                              ),
-                            )}
-                          </SelectContent>
-                        </Select> */}
-                        <FormControl>
-                          <div>
-                            <MultiComboBox
-                              placeholder="No traits set"
-                              container={dialogRef?.current}
-                              onChange={field.onChange}
-                              defaultValues={field.value}
-                              options={traitOptions}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          The traits that the item has
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
                   <FormField
                     control={form.control}
                     name="name"
@@ -341,6 +301,31 @@ export default function ItemDetailsSheet({
                           />
                         </FormControl>
                         <FormDescription>The level of the item</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="traits"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Traits</FormLabel>
+                        <FormControl>
+                          <div>
+                            <MultiComboBox
+                              placeholder="No traits set"
+                              container={dialogRef?.current}
+                              onChange={field.onChange}
+                              defaultValues={field.value}
+                              options={traitOptions}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          The traits that the item has
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}

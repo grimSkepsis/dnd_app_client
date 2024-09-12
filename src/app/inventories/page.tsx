@@ -7,7 +7,7 @@ import AddInventoryItemsSheet from "@/components/inventories/add-inventory-items
 import { Button } from "@/components/ui/button";
 import useInventoryManagement from "@/hooks/inventories/useInventoryManagement";
 import partial from "lodash/partial";
-import ItemDetailsSheet from "@/components/inventories/item-details-sheet";
+import ItemDetailsSheet from "@/components/inventories/item-details/item-details-sheet";
 
 export default function Page() {
   const [isAddItemsOpen, setIsAddItemsOpen] = useState(false);
