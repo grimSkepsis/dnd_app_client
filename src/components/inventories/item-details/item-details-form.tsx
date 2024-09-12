@@ -22,8 +22,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ItemDetailsFragment, ItemDetailsQuery } from "@/gql/graphql";
 import { Option } from "@/types/form";
-import { useEffect } from "react";
+import { MutableRefObject, useEffect } from "react";
 import { MultiComboBox } from "@/components/ui/multi-combobox";
+import isNil from "lodash/isNil";
 
 const ActivationActionCostEnum = z.enum([
   "n/a",
@@ -59,13 +60,17 @@ const formSchema = z.object({
 type ItemDetailsFormProps = {
   data?: ItemDetailsFragment | null;
   traitOptions: Option[];
-  parentRef?: React.RefObject<HTMLDivElement>;
+  parentRef?: MutableRefObject<HTMLDivElement | undefined>;
+  onSubmit: (data: z.infer<typeof formSchema>) => void;
+  onCancel?: () => void;
 };
 
 export function ItemDetailsForm({
   data,
   traitOptions,
   parentRef,
+  onCancel,
+  onSubmit: handleSubmit,
 }: ItemDetailsFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -88,7 +93,8 @@ export function ItemDetailsForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+
+    handleSubmit(values);
   }
 
   return (
@@ -259,7 +265,16 @@ export function ItemDetailsForm({
           )}
         />
 
-        <Button type="submit">Submit</Button>
+        <div className="flex gap-2">
+          <Button type="submit" variant={"default"}>
+            Save
+          </Button>
+          {!isNil(onCancel) && (
+            <Button variant={"outline"} onClick={onCancel}>
+              Cancel
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   );

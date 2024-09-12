@@ -12,11 +12,10 @@ import { useFragment } from "@/gql";
 import isNil from "lodash/isNil";
 import { DialogProps } from "@radix-ui/react-dialog";
 
-import { useEffect, useRef } from "react";
-
-import { MultiComboBox } from "@/components/ui/multi-combobox";
+import { useRef, useState } from "react";
 import { Option } from "@/types/form";
 import { ItemDetailsForm } from "./item-details-form";
+import { Pencil } from "lucide-react";
 
 type ItemDetailsSheetProps = {
   data?: ItemDetailsQuery;
@@ -30,23 +29,22 @@ export default function ItemDetailsSheet({
   traitOptions,
   ...dialogProps
 }: ItemDetailsSheetProps) {
+  const [isEditing, setIsEditing] = useState(false);
   const data = useFragment(
     ItemDetailsFragmentDocument,
     rawData?.items?.getItem,
   );
 
-  const dialogRef = useRef<HTMLDivElement>(undefined);
+  const dialogRef = useRef<HTMLDivElement>();
 
   function onOpenChange(isOpen: boolean) {
     handleOpenChange?.(isOpen);
+    setIsEditing(false);
   }
 
-  function onAddTrait() {
-    // Add a new trait to the item
-  }
-
-  function onRemoveTrait() {
-    // Remove a trait from the item
+  function onSubmit(values: any) {
+    console.log("submitting!", values);
+    setIsEditing(false);
   }
 
   return (
@@ -57,13 +55,29 @@ export default function ItemDetailsSheet({
             <SheetTitle>Loading item details...</SheetTitle>
           ) : (
             <>
-              <SheetTitle>{data.name}</SheetTitle>
+              <SheetTitle>
+                {data.name}{" "}
+                {!isEditing && (
+                  <button
+                    onClick={(e) => {
+                      setIsEditing(true);
+                    }}
+                    className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                )}
+              </SheetTitle>
               <SheetDescription>{data.description}</SheetDescription>
-              <ItemDetailsForm
-                data={data}
-                traitOptions={traitOptions}
-                parentRef={dialogRef}
-              />
+              {isEditing && (
+                <ItemDetailsForm
+                  data={data}
+                  traitOptions={traitOptions}
+                  parentRef={dialogRef}
+                  onCancel={() => setIsEditing(false)}
+                  onSubmit={onSubmit}
+                />
+              )}
 
               <SheetClose />
             </>
