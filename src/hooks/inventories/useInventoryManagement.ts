@@ -5,6 +5,7 @@ import {
   ItemDetailsQueryDocument,
   ItemsListingQueryDocument,
   QuickCreateItemMutationDocument,
+  UpdateItemMutationDocument,
 } from "./graphql";
 import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
@@ -15,6 +16,7 @@ import { isNil } from "lodash";
 import { DEFAULT_PAGINATION_STATE } from "../pagination/types";
 import { ItemQuantityAdjustmentDescription } from "./types";
 import { InventoryItemQuantityAdjustmentParams } from "@/gql/graphql";
+import { ItemFormProperties } from "@/components/inventories/item-details/types";
 
 export default function useInventoryManagement() {
   const DEFAULT_SORTING_STATE: SortingState = [{ id: "name", desc: false }];
@@ -27,6 +29,8 @@ export default function useInventoryManagement() {
   );
 
   const [quickCreateItem] = useMutation(QuickCreateItemMutationDocument);
+
+  const [updateItem] = useMutation(UpdateItemMutationDocument);
 
   const [
     getDetailedItem,
@@ -163,6 +167,16 @@ export default function useInventoryManagement() {
     getDetailedItem({ variables: { id } });
   }
 
+  async function onUpdateItem(id: string, params: ItemFormProperties) {
+    console.log("PARAMS TO UPDATE ", params);
+    await updateItem({
+      variables: {
+        id,
+        params,
+      },
+    });
+  }
+
   return {
     inventoryItemsSorting,
     onInventoryItemsSortChange,
@@ -182,6 +196,7 @@ export default function useInventoryManagement() {
     onViewItemDetails,
     itemDetailsLoading,
     itemDetailsData,
+    onUpdateItem,
     traitOptions: [
       "Consumable",
       "Portion",

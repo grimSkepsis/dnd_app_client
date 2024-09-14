@@ -25,52 +25,18 @@ import { Option } from "@/types/form";
 import { MutableRefObject, useEffect } from "react";
 import { MultiComboBox } from "@/components/ui/multi-combobox";
 import isNil from "lodash/isNil";
-
-const ActivationActionCostEnum = z.enum([
-  "n/a",
-  "1 action",
-  "2 actions",
-  "3 actions",
-  "free action",
-  "reaction",
-]);
-type ActivationActionCost = z.infer<typeof ActivationActionCostEnum>;
-
-const ACTIVATION_ACTION_COST_OPTIONS: Record<ActivationActionCost, string> = {
-  "n/a": "Not activatable",
-  "1 action": "One Action",
-  "2 actions": "Two Actions",
-  "3 actions": "Three Actions",
-  "free action": "Free Action",
-  reaction: "Reaction",
-};
-
-const ACTIVATION_COSTS = {
-  "n/a": "Not activatable",
-  "1 action": "One Action",
-  "2 actions": "Two Actions",
-  "3 actions": "Three Actions",
-  "free action": "Free Action",
-  reaction: "Reaction",
-};
-
-const formSchema = z.object({
-  name: z.string().min(2).max(50),
-  description: z.string().min(0).max(500),
-  value: z.number().min(0),
-  activationCost: ActivationActionCostEnum,
-  usageRequirements: z.string().min(0).max(500),
-  effect: z.string().min(0).max(500),
-  bulk: z.number().min(0),
-  level: z.number().min(0),
-  traits: z.array(z.string()),
-});
+import {
+  ACTIVATION_ACTION_COST_OPTIONS,
+  ActivationActionCost,
+  ItemFormProperties,
+  ItemFormSchema,
+} from "./types";
 
 type ItemDetailsFormProps = {
   data?: ItemDetailsFragment | null;
   traitOptions: Option[];
   parentRef?: MutableRefObject<HTMLDivElement | undefined>;
-  onSubmit: (data: z.infer<typeof formSchema>) => void;
+  onSubmit: (data: ItemFormProperties) => Promise<void>;
   onCancel?: () => void;
 };
 
@@ -81,8 +47,8 @@ export function ItemDetailsForm({
   onCancel,
   onSubmit: handleSubmit,
 }: ItemDetailsFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<ItemFormProperties>({
+    resolver: zodResolver(ItemFormSchema),
     defaultValues: {
       name: data?.name ?? "",
       description: data?.description ?? "",
@@ -110,14 +76,14 @@ export function ItemDetailsForm({
     });
   }, [data, form]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: ItemFormProperties) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
 
     handleSubmit(values);
   }
 
-  console.log("FORM ", form.getValues());
+  // console.log("FORM ", form.getValues());
 
   return (
     <Form {...form}>

@@ -17,17 +17,20 @@ import { Option } from "@/types/form";
 import { ItemDetailsForm } from "./item-details-form";
 import { Pencil } from "lucide-react";
 import { Tag } from "@/components/ui/tag";
+import { ItemFormProperties } from "./types";
 
 type ItemDetailsSheetProps = {
   data?: ItemDetailsQuery;
   traitOptions: Option[];
   isLoading: boolean;
+  onSubmitUpdate: (id: string, data: ItemFormProperties) => Promise<void>;
 } & DialogProps;
 
 export default function ItemDetailsSheet({
   onOpenChange: handleOpenChange,
   data: rawData,
   traitOptions,
+  onSubmitUpdate,
   ...dialogProps
 }: ItemDetailsSheetProps) {
   const [isEditing, setIsEditing] = useState(false);
@@ -43,8 +46,9 @@ export default function ItemDetailsSheet({
     setIsEditing(false);
   }
 
-  function onSubmit(values: any) {
-    console.log("submitting!", values);
+  async function onSubmit(values: ItemFormProperties) {
+    if (isNil(data)) return;
+    await onSubmitUpdate(data?.uuid, values);
     setIsEditing(false);
   }
 

@@ -37,7 +37,7 @@ export type InventoryItem = {
   effect?: Maybe<Scalars['String']['output']>;
   isConsumable: Scalars['Boolean']['output'];
   level?: Maybe<Scalars['Int']['output']>;
-  name: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
   quantity: Scalars['Int']['output'];
   traits?: Maybe<Array<Scalars['String']['output']>>;
   usageRequirements?: Maybe<Scalars['String']['output']>;
@@ -135,7 +135,7 @@ export type Item = {
   effect?: Maybe<Scalars['String']['output']>;
   isConsumable: Scalars['Boolean']['output'];
   level?: Maybe<Scalars['Int']['output']>;
-  name: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
   traits?: Maybe<Array<Scalars['String']['output']>>;
   usageRequirements?: Maybe<Scalars['String']['output']>;
   uuid: Scalars['ID']['output'];
@@ -145,10 +145,17 @@ export type Item = {
 export type ItemMutation = {
   __typename?: 'ItemMutation';
   createItem?: Maybe<Item>;
+  updateItem?: Maybe<Item>;
 };
 
 
 export type ItemMutationCreateItemArgs = {
+  params: ItemProperties;
+};
+
+
+export type ItemMutationUpdateItemArgs = {
+  itemUuid: Scalars['String']['input'];
   params: ItemProperties;
 };
 
@@ -158,7 +165,7 @@ export type ItemProperties = {
   description?: InputMaybe<Scalars['String']['input']>;
   effect?: InputMaybe<Scalars['String']['input']>;
   level?: InputMaybe<Scalars['Int']['input']>;
-  name: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
   traits?: InputMaybe<Array<Scalars['String']['input']>>;
   usageRequirements?: InputMaybe<Scalars['String']['input']>;
   value?: InputMaybe<Scalars['Int']['input']>;
@@ -222,7 +229,7 @@ export type QueryRoot = {
   items: ItemQuery;
 };
 
-export type ItemListingFragment = { __typename?: 'Item', uuid: string, name: string } & { ' $fragmentName'?: 'ItemListingFragment' };
+export type ItemListingFragment = { __typename?: 'Item', uuid: string, name?: string | null } & { ' $fragmentName'?: 'ItemListingFragment' };
 
 export type ItemsListingQueryVariables = Exact<{
   pageIndex: Scalars['Int']['input'];
@@ -238,7 +245,7 @@ export type ItemsListingQuery = { __typename?: 'QueryRoot', items: { __typename?
         & { ' $fragmentRefs'?: { 'ItemListingFragment': ItemListingFragment } }
       )> } | null } };
 
-export type ItemDetailsFragment = { __typename?: 'Item', uuid: string, name: string, value?: number | null, displayValue?: string | null, description?: string | null, activationCost?: string | null, usageRequirements?: string | null, effect?: string | null, traits?: Array<string> | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean } & { ' $fragmentName'?: 'ItemDetailsFragment' };
+export type ItemDetailsFragment = { __typename?: 'Item', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, description?: string | null, activationCost?: string | null, usageRequirements?: string | null, effect?: string | null, traits?: Array<string> | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean } & { ' $fragmentName'?: 'ItemDetailsFragment' };
 
 export type ItemDetailsQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -263,9 +270,20 @@ export type QuickCreateItemMutationVariables = Exact<{
 }>;
 
 
-export type QuickCreateItemMutation = { __typename?: 'MutationRoot', items: { __typename?: 'ItemMutation', createItem?: { __typename?: 'Item', name: string } | null } };
+export type QuickCreateItemMutation = { __typename?: 'MutationRoot', items: { __typename?: 'ItemMutation', createItem?: { __typename?: 'Item', name?: string | null } | null } };
 
-export type InventoryItemListingFragment = { __typename?: 'InventoryItem', uuid: string, name: string, value?: number | null, displayValue?: string | null, quantity: number, traits?: Array<string> | null, description?: string | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean } & { ' $fragmentName'?: 'InventoryItemListingFragment' };
+export type UpdateItemMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  params: ItemProperties;
+}>;
+
+
+export type UpdateItemMutation = { __typename?: 'MutationRoot', items: { __typename?: 'ItemMutation', updateItem?: (
+      { __typename?: 'Item' }
+      & { ' $fragmentRefs'?: { 'ItemDetailsFragment': ItemDetailsFragment } }
+    ) | null } };
+
+export type InventoryItemListingFragment = { __typename?: 'InventoryItem', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, quantity: number, traits?: Array<string> | null, description?: string | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean } & { ' $fragmentName'?: 'InventoryItemListingFragment' };
 
 export type InventoryWithItemsListingFragment = { __typename?: 'InventoryWithItems', inventory: { __typename?: 'Inventory', uuid: string, name: string, cp: number, sp: number, gp: number, pp: number }, items: { __typename?: 'PaginatedInventoryItemResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<(
       { __typename?: 'InventoryItem' }
@@ -295,4 +313,5 @@ export const ItemsListingDocument = {"kind":"Document","definitions":[{"kind":"O
 export const ItemDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"itemDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemDetails"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uuid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"displayValue"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"activationCost"}},{"kind":"Field","name":{"kind":"Name","value":"usageRequirements"}},{"kind":"Field","name":{"kind":"Name","value":"effect"}},{"kind":"Field","name":{"kind":"Name","value":"traits"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"bulk"}},{"kind":"Field","name":{"kind":"Name","value":"displayBulk"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"isConsumable"}}]}}]} as unknown as DocumentNode<ItemDetailsQuery, ItemDetailsQueryVariables>;
 export const AdjustItemsForInventoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"adjustItemsForInventory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"inventoryId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"items"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryItemQuantityAdjustmentParams"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inventoryItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addOrRemoveItemsFromInventory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"inventoryId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"inventoryId"}}},{"kind":"Argument","name":{"kind":"Name","value":"items"},"value":{"kind":"Variable","name":{"kind":"Name","value":"items"}}}]}]}}]}}]} as unknown as DocumentNode<AdjustItemsForInventoryMutation, AdjustItemsForInventoryMutationVariables>;
 export const QuickCreateItemDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"quickCreateItem"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"params"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<QuickCreateItemMutation, QuickCreateItemMutationVariables>;
+export const UpdateItemDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateItem"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"params"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ItemProperties"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"itemUuid"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"params"},"value":{"kind":"Variable","name":{"kind":"Name","value":"params"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemDetails"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uuid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"displayValue"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"activationCost"}},{"kind":"Field","name":{"kind":"Name","value":"usageRequirements"}},{"kind":"Field","name":{"kind":"Name","value":"effect"}},{"kind":"Field","name":{"kind":"Name","value":"traits"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"bulk"}},{"kind":"Field","name":{"kind":"Name","value":"displayBulk"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"isConsumable"}}]}}]} as unknown as DocumentNode<UpdateItemMutation, UpdateItemMutationVariables>;
 export const InventoryWithItemsListingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"inventoryWithItemsListing"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageIndex"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderDirection"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ItemQueryFilter"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inventoryWithItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getInventoryWithItemsByOwnerName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"nameTerm"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"pageIndex"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageIndex"}}},{"kind":"Argument","name":{"kind":"Name","value":"pageSize"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageSize"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderDirection"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderDirection"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"InventoryWithItemsListing"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"InventoryItemListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uuid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"displayValue"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"traits"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"bulk"}},{"kind":"Field","name":{"kind":"Name","value":"displayBulk"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"isConsumable"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"InventoryWithItemsListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"InventoryWithItems"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inventory"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uuid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"cp"}},{"kind":"Field","name":{"kind":"Name","value":"sp"}},{"kind":"Field","name":{"kind":"Name","value":"gp"}},{"kind":"Field","name":{"kind":"Name","value":"pp"}},{"kind":"Field","name":{"kind":"Name","value":"cp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"InventoryItemListing"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageIndex"}},{"kind":"Field","name":{"kind":"Name","value":"pageSize"}},{"kind":"Field","name":{"kind":"Name","value":"totalEntities"}},{"kind":"Field","name":{"kind":"Name","value":"totalPages"}}]}}]}}]} as unknown as DocumentNode<InventoryWithItemsListingQuery, InventoryWithItemsListingQueryVariables>;
