@@ -38,6 +38,7 @@ export default function useInventoryManagement() {
       loading: itemDetailsLoading,
       data: itemDetailsData,
       error: itemDetailsError,
+      refetch: refetchItemDetails,
     },
   ] = useLazyQuery(ItemDetailsQueryDocument);
 
@@ -147,6 +148,7 @@ export default function useInventoryManagement() {
         quantityChange: item.quantity,
       })),
     );
+    await refetchInventoryAndItemsData();
   }
 
   async function onQuickCreateItem(name: string) {
@@ -175,6 +177,7 @@ export default function useInventoryManagement() {
         params,
       },
     });
+    await Promise.all([refetchItemDetails(), refetchInventoryAndItemsData()]);
   }
 
   return {

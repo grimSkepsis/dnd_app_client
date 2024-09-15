@@ -154,7 +154,8 @@ function InventoryItemActionRenderer({
   const [isUsing, setIsUsing] = useState(false);
   const [isSelling, setIsSelling] = useState(false);
 
-  async function onUseItem() {
+  async function onUseItem(e: Event) {
+    e.stopPropagation();
     try {
       setIsUsing(true);
       await handleUseItem(uuid);

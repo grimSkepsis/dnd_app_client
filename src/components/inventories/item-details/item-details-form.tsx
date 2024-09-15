@@ -52,7 +52,7 @@ export function ItemDetailsForm({
     defaultValues: {
       name: data?.name ?? "",
       description: data?.description ?? "",
-      value: (data?.value ?? 0) / 1000 ?? 0,
+      value: (data?.value ?? 0) / 100,
       activationCost: (data?.activationCost as ActivationActionCost) ?? "n/a",
       usageRequirements: data?.usageRequirements ?? "",
       effect: data?.effect ?? "",
@@ -66,7 +66,7 @@ export function ItemDetailsForm({
     form.reset({
       name: data?.name ?? "",
       description: data?.description ?? "",
-      value: (data?.value ?? 0) / 1000 ?? 0,
+      value: (data?.value ?? 0) / 100,
       activationCost: (data?.activationCost as ActivationActionCost) ?? "n/a",
       usageRequirements: data?.usageRequirements ?? "",
       effect: data?.effect ?? "",

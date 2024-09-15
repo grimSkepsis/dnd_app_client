@@ -25,7 +25,10 @@ export const ACTIVATION_ACTION_COST_OPTIONS: Record<
 export const ItemFormSchema = z.object({
   name: z.string().min(2).max(50),
   description: z.string().min(0).max(500),
-  value: z.coerce.number().min(0),
+  value: z.coerce
+    .number()
+    .transform((val) => Number(val) * 100)
+    .refine((val) => val >= 0),
   activationCost: ActivationActionCostEnum,
   usageRequirements: z.string().min(0).max(500),
   effect: z.string().min(0).max(500),
