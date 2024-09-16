@@ -13,14 +13,17 @@ import {
 } from "@/hooks/pagination/types";
 import { usePagination } from "@/hooks/pagination/usePagination";
 
-type DataPaginationProps = UsePaginationProps;
-export function DataPagination(props: DataPaginationProps) {
+type DataPaginationProps = UsePaginationProps & { className?: string };
+export function DataPagination({
+  className,
+  ...paginationProps
+}: DataPaginationProps) {
   const {
     onNextPage,
     onPreviousPage,
     onPageSelection,
     state: { pageIndex, totalPages },
-  } = usePagination(props);
+  } = usePagination(paginationProps);
 
   const hasPreviousPage = pageIndex > 0;
   const hasMultiplePreviousPages = pageIndex > 1;
@@ -29,7 +32,7 @@ export function DataPagination(props: DataPaginationProps) {
   const hasMultipleNextPages = pageIndex < totalPages - 2;
 
   return (
-    <Pagination>
+    <Pagination className={className}>
       <PaginationContent>
         {hasPreviousPage && (
           <>

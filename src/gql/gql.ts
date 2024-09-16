@@ -18,6 +18,7 @@ const documents = {
     "\n  fragment ItemDetails on Item {\n    uuid\n    name\n    value\n    displayValue\n    description\n    activationCost\n    usageRequirements\n    effect\n    traits\n    description\n    bulk\n    displayBulk\n    level\n    isConsumable\n  }\n": types.ItemDetailsFragmentDoc,
     "\n  query itemDetails($id: String!) {\n    items {\n      getItem(id: $id) {\n        ...ItemDetails\n      }\n    }\n  }\n": types.ItemDetailsDocument,
     "\n  mutation adjustItemsForInventory(\n    $inventoryId: String!\n    $items: [InventoryItemQuantityAdjustmentParams!]!\n  ) {\n    inventoryItems {\n      addOrRemoveItemsFromInventory(inventoryId: $inventoryId, items: $items)\n    }\n  }\n": types.AdjustItemsForInventoryDocument,
+    "\n  mutation sellItemsForInventory(\n    $inventoryId: String!\n    $items: [InventoryItemQuantityAdjustmentParams!]!\n  ) {\n    inventoryItems {\n      sellItems(inventoryId: $inventoryId, items: $items)\n    }\n  }\n": types.SellItemsForInventoryDocument,
     "\n  mutation quickCreateItem($name: String!) {\n    items {\n      createItem(params: { name: $name }) {\n        name\n      }\n    }\n  }\n": types.QuickCreateItemDocument,
     "\n  mutation updateItem($id: String!, $params: ItemProperties!) {\n    items {\n      updateItem(itemUuid: $id, params: $params) {\n        ...ItemDetails\n      }\n    }\n  }\n": types.UpdateItemDocument,
     "\n  fragment InventoryItemListing on InventoryItem {\n    uuid\n    name\n    value\n    displayValue\n    quantity\n    traits\n    description\n    bulk\n    displayBulk\n    level\n    isConsumable\n  }\n": types.InventoryItemListingFragmentDoc,
@@ -59,6 +60,10 @@ export function graphql(source: "\n  query itemDetails($id: String!) {\n    item
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation adjustItemsForInventory(\n    $inventoryId: String!\n    $items: [InventoryItemQuantityAdjustmentParams!]!\n  ) {\n    inventoryItems {\n      addOrRemoveItemsFromInventory(inventoryId: $inventoryId, items: $items)\n    }\n  }\n"): (typeof documents)["\n  mutation adjustItemsForInventory(\n    $inventoryId: String!\n    $items: [InventoryItemQuantityAdjustmentParams!]!\n  ) {\n    inventoryItems {\n      addOrRemoveItemsFromInventory(inventoryId: $inventoryId, items: $items)\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation sellItemsForInventory(\n    $inventoryId: String!\n    $items: [InventoryItemQuantityAdjustmentParams!]!\n  ) {\n    inventoryItems {\n      sellItems(inventoryId: $inventoryId, items: $items)\n    }\n  }\n"): (typeof documents)["\n  mutation sellItemsForInventory(\n    $inventoryId: String!\n    $items: [InventoryItemQuantityAdjustmentParams!]!\n  ) {\n    inventoryItems {\n      sellItems(inventoryId: $inventoryId, items: $items)\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

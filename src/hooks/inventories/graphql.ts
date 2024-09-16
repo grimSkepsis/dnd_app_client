@@ -75,6 +75,17 @@ export const AdjustItemQuantityMutationDocument = graphql(`
   }
 `);
 
+export const SellItemsMutationDocument = graphql(`
+  mutation sellItemsForInventory(
+    $inventoryId: String!
+    $items: [InventoryItemQuantityAdjustmentParams!]!
+  ) {
+    inventoryItems {
+      sellItems(inventoryId: $inventoryId, items: $items)
+    }
+  }
+`);
+
 export const QuickCreateItemMutationDocument = graphql(`
   mutation quickCreateItem($name: String!) {
     items {

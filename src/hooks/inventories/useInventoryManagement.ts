@@ -5,6 +5,7 @@ import {
   ItemDetailsQueryDocument,
   ItemsListingQueryDocument,
   QuickCreateItemMutationDocument,
+  SellItemsMutationDocument,
   UpdateItemMutationDocument,
 } from "./graphql";
 import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
@@ -27,6 +28,8 @@ export default function useInventoryManagement() {
   const [adjustInventoryItemQuantity] = useMutation(
     AdjustItemQuantityMutationDocument,
   );
+
+  const [sellItems] = useMutation(SellItemsMutationDocument);
 
   const [quickCreateItem] = useMutation(QuickCreateItemMutationDocument);
 
@@ -165,6 +168,20 @@ export default function useInventoryManagement() {
     ]);
   }
 
+  async function onSellItem(inventoryId: string, itemId: string) {
+    const res = await adjustInventoryItemQuantity({
+      variables: {
+        inventoryId,
+        items: [{ itemId, quantityChange: -1 }],
+      },
+    });
+    if (res?.data?.inventoryItems.addOrRemoveItemsFromInventory !== true) {
+      throw new Error("Failed to sell item");
+    } else {
+      refetchInventoryAndItemsData();
+    }
+  }
+
   async function onViewItemDetails(id: string) {
     getDetailedItem({ variables: { id } });
   }
@@ -180,16 +197,21 @@ export default function useInventoryManagement() {
     await Promise.all([refetchItemDetails(), refetchInventoryAndItemsData()]);
   }
 
+  const {
+    name: inventoryName,
+    uuid: inventoryId,
+    ...currency
+  } = inventoryAndItemsFragmentData?.inventory ?? { name: "", uuid: "" };
+
   return {
     inventoryItemsSorting,
     onInventoryItemsSortChange,
-    // inventoryAndItemsData,
-    inventoryName:
-      inventoryAndItemsFragmentData?.inventory?.name ?? "No Inventory Found",
-    inventoryId: inventoryAndItemsFragmentData?.inventory?.uuid ?? "",
+    inventoryName,
+    inventoryId,
     onAddItems,
     onUseItem,
     inventoryItems,
+    currency: currency ?? { pp: 0, gp: 0, sp: 0, cp: 0 },
     inventoryItemsPaginationState,
     refetchInventoryAndItemsData,
     itemOptionsData,
@@ -200,6 +222,7 @@ export default function useInventoryManagement() {
     itemDetailsLoading,
     itemDetailsData,
     onUpdateItem,
+    onSellItem,
     traitOptions: [
       "Consumable",
       "Portion",

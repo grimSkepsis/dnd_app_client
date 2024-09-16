@@ -69,6 +69,7 @@ function calcSortState(sortDir: SortDirection | false) {
 
 export function getInventoryColumns(
   onUseItem: (itemId: string) => Promise<void>,
+  onSellItem: (itemId: string) => Promise<void>,
 ): ColumnDef<FragmentType<typeof InventoryItemListingFragmentDocument>>[] {
   return [
     {
@@ -134,7 +135,11 @@ export function getInventoryColumns(
           <CellRenderer<InventoryItemListingFragment>
             rowData={props.row.original}
             getDisplayValue={(item) => (
-              <InventoryItemActionRenderer item={item} onUseItem={onUseItem} />
+              <InventoryItemActionRenderer
+                item={item}
+                onUseItem={onUseItem}
+                onSellItem={onSellItem}
+              />
             )}
           />
         );
@@ -146,10 +151,13 @@ export function getInventoryColumns(
 type InventoryItemActionRendererProps = {
   item: InventoryItemListingFragment;
   onUseItem: (itemId: string) => Promise<void>;
+
+  onSellItem: (itemId: string) => Promise<void>;
 };
 function InventoryItemActionRenderer({
   item: { isConsumable, uuid, name },
   onUseItem: handleUseItem,
+  onSellItem: handleSellItem,
 }: InventoryItemActionRendererProps) {
   const [isUsing, setIsUsing] = useState(false);
   const [isSelling, setIsSelling] = useState(false);
@@ -169,13 +177,38 @@ function InventoryItemActionRenderer({
     setIsUsing(false);
   }
 
+  async function onSellItem(e: Event) {
+    e.stopPropagation();
+    try {
+      setIsSelling(true);
+      await handleSellItem(uuid);
+      toast.success(`${name} successfully sold.`);
+    } catch (e) {
+      console.error(e);
+      toast.error(
+        `There as an issue selling ${name}. Please refresh and try again.`,
+      );
+    }
+    setIsUsing(false);
+  }
+
   const actionsDisabled = isUsing || isSelling;
 
   return (
     <div className="flex gap-2">
-      <Button disabled={actionsDisabled}>Sell</Button>
+      <Button
+        variant="outline"
+        disabled={actionsDisabled}
+        onClick={(e) => void onSellItem(e)}
+      >
+        Sell
+      </Button>
       {isConsumable && (
-        <Button disabled={actionsDisabled} onClick={onUseItem}>
+        <Button
+          variant="outline"
+          disabled={actionsDisabled}
+          onClick={(e) => void onUseItem(e)}
+        >
           Use
         </Button>
       )}

@@ -139,6 +139,7 @@ export function DataTable<TData, TValue>({
       </div>
       {!isNil(paginationState) && (
         <DataPagination
+          className="mt-4"
           state={paginationState}
           onNextPage={onNextPage}
           onResetPage={onResetPage}

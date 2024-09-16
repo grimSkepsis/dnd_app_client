@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import useInventoryManagement from "@/hooks/inventories/useInventoryManagement";
 import partial from "lodash/partial";
 import ItemDetailsSheet from "@/components/inventories/item-details/item-details-sheet";
+import { InventoryCurrency } from "@/components/inventories/currency/inventory-currency";
 
 export default function Page() {
   const [isAddItemsOpen, setIsAddItemsOpen] = useState(false);
@@ -24,12 +25,14 @@ export default function Page() {
     inventoryName,
     onAddItems,
     onUseItem,
+    onSellItem,
     onQuickCreateItem,
     onViewItemDetails: handleViewItemDetails,
     itemDetailsData,
     itemDetailsLoading,
     traitOptions,
     onUpdateItem,
+    currency,
   } = useInventoryManagement();
 
   function onPaginationChange(state: Updater<PaginationState>) {
@@ -62,7 +65,17 @@ export default function Page() {
   return (
     <main>
       <div className="container mx-auto py-10">
-        <Button onClick={() => setIsAddItemsOpen(true)}>Add Items</Button>
+        <div className="flex gap-4 justify-between place-items-center mb-3">
+          <InventoryCurrency data={currency} />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsAddItemsOpen(true)}
+          >
+            Add Items
+          </Button>
+        </div>
+
         <AddInventoryItemsSheet
           onCreateItem={onQuickCreateItem}
           inventoryId={inventoryId}
@@ -81,7 +94,10 @@ export default function Page() {
           onSubmitUpdate={onUpdateItem}
         />
         <DataTable
-          columns={getInventoryColumns(partial(onUseItem, inventoryId))}
+          columns={getInventoryColumns(
+            partial(onUseItem, inventoryId),
+            partial(onSellItem, inventoryId),
+          )}
           data={inventoryItems}
           onRowClick={(row) => void onViewItemDetails(row.uuid)}
           sortingState={inventoryItemsSorting}
