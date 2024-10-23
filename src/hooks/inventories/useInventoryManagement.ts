@@ -169,13 +169,13 @@ export default function useInventoryManagement() {
   }
 
   async function onSellItem(inventoryId: string, itemId: string) {
-    const res = await adjustInventoryItemQuantity({
+    const res = await sellItems({
       variables: {
         inventoryId,
         items: [{ itemId, quantityChange: -1 }],
       },
     });
-    if (res?.data?.inventoryItems.addOrRemoveItemsFromInventory !== true) {
+    if (res?.data?.inventoryItems.sellItems !== true) {
       throw new Error("Failed to sell item");
     } else {
       refetchInventoryAndItemsData();
