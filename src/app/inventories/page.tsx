@@ -9,6 +9,7 @@ import useInventoryManagement from "@/hooks/inventories/useInventoryManagement";
 import partial from "lodash/partial";
 import ItemDetailsSheet from "@/components/inventories/item-details/item-details-sheet";
 import { InventoryCurrency } from "@/components/inventories/currency/inventory-currency";
+import { InventorySelector } from "@/components/inventories/inventory-selector/inventorySelector";
 
 export default function Page() {
   const [isAddItemsOpen, setIsAddItemsOpen] = useState(false);
@@ -34,9 +35,12 @@ export default function Page() {
     onUpdateItem,
     currency,
     onUpdateCurrency,
+    inventoryOptions,
+    onSelectInventory,
   } = useInventoryManagement();
 
   function onPaginationChange(state: Updater<PaginationState>) {
+    //TODO - implement pagination
     console.log("onPaginationChange", state);
   }
 
@@ -66,7 +70,13 @@ export default function Page() {
   return (
     <main>
       <div className="container mx-auto py-10">
+        <InventorySelector
+          selectedInventory={inventoryId}
+          inventoryOptions={inventoryOptions}
+          onSelect={onSelectInventory}
+        />
         <div className="flex gap-4 justify-between place-items-center mb-3">
+          {/* TODO - add better type safety/relay stuff */}
           <InventoryCurrency
             data={currency}
             onUpdate={partial(onUpdateCurrency, inventoryId)}
@@ -103,6 +113,7 @@ export default function Page() {
             partial(onSellItem, inventoryId)
           )}
           data={inventoryItems}
+          // TODO - fix type safety
           onRowClick={(row) => void onViewItemDetails(row.uuid)}
           sortingState={inventoryItemsSorting}
           onPaginationChange={onPaginationChange}

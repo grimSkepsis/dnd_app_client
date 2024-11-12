@@ -21,7 +21,7 @@ export function InventoryCurrency({
   onUpdate,
 }: InventoryCurrencyProps) {
   const [isEditing, setIsEditing] = useState(false);
-
+  //TODO fix overflow issue
   const form = useForm<CurrencyFormProperties>({
     resolver: zodResolver(CurrencyFormSchema),
     defaultValues: {

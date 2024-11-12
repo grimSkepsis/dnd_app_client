@@ -213,6 +213,10 @@ export default function useInventoryManagement() {
     await Promise.all([refetchItemDetails(), refetchInventoryAndItemsData()]);
   }
 
+  async function onSelectInventory(inventoryId: string) {
+    console.log("SELECTED INVENTORY ", inventoryId);
+  }
+
   const {
     name: inventoryName,
     uuid: inventoryId,
@@ -250,5 +254,10 @@ export default function useInventoryManagement() {
     ]
       .sort((a, b) => a.localeCompare(b))
       .map((trait) => ({ value: trait, label: trait })),
+    inventoryOptions: [
+      { value: inventoryId, label: inventoryName },
+      { value: "blah", label: "Blah Value" },
+    ],
+    onSelectInventory,
   };
 }
