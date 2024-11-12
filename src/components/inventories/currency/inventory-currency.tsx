@@ -25,10 +25,10 @@ export function InventoryCurrency({
   const form = useForm<CurrencyFormProperties>({
     resolver: zodResolver(CurrencyFormSchema),
     defaultValues: {
-      pp,
-      gp,
-      sp,
-      cp,
+      pp: 0,
+      gp: 0,
+      sp: 0,
+      cp: 0,
     },
   });
 

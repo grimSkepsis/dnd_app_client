@@ -7,6 +7,7 @@ import {
   QuickCreateItemMutationDocument,
   SellItemsMutationDocument,
   UpdateItemMutationDocument,
+  UpdateInventoryCurrencyMutationDocument,
 } from "./graphql";
 import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
@@ -45,6 +46,10 @@ export default function useInventoryManagement() {
       refetch: refetchItemDetails,
     },
   ] = useLazyQuery(ItemDetailsQueryDocument);
+
+  const [updateInventoryCurrency] = useMutation(
+    UpdateInventoryCurrencyMutationDocument
+  );
 
   const { data: inventoryAndItemsData, refetch: refetchInventoryAndItemsData } =
     useSuspenseQuery(InventoryWithItemsListingQueryDocument, {
@@ -189,6 +194,12 @@ export default function useInventoryManagement() {
 
   async function onUpdateCurrency(inventoryId: string, currency: CurrencyData) {
     console.log("CURRENCY TO UPDATE ", currency);
+    await updateInventoryCurrency({
+      variables: {
+        inventoryId,
+        params: currency,
+      },
+    });
   }
 
   async function onUpdateItem(id: string, params: ItemFormProperties) {

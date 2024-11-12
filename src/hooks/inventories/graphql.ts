@@ -168,3 +168,22 @@ export const InventoryWithItemsListingQueryDocument = graphql(`
     }
   }
 `);
+
+export const UpdateInventoryCurrencyMutationDocument = graphql(`
+  mutation updateInventoryCurrency(
+    $inventoryId: String!
+    $params: InventoryCurrencyChangeInput!
+  ) {
+    inventory {
+      updateInventoryCurrency(inventoryId: $inventoryId, params: $params) {
+        uuid
+        name
+        cp
+        sp
+        gp
+        pp
+        cp
+      }
+    }
+  }
+`);
