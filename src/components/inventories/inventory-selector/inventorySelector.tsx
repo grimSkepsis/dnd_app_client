@@ -17,6 +17,7 @@ export function InventorySelector({
   selectedInventory,
   onSelect,
 }: InventorySelectorProps) {
+  // TODO - get pagination working
   return (
     <div className="flex items-center gap-2">
       <label>Viewing</label>

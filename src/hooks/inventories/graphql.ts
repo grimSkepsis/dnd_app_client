@@ -147,7 +147,7 @@ export const InventoryWithItemsListingFragment = graphql(/* GraphQL */ `
 
 export const InventoryWithItemsListingQueryDocument = graphql(`
   query inventoryWithItemsListing(
-    $name: String!
+    $id: String!
     $pageIndex: Int!
     $pageSize: Int!
     $orderBy: String!
@@ -155,8 +155,8 @@ export const InventoryWithItemsListingQueryDocument = graphql(`
     $filter: ItemQueryFilter!
   ) {
     inventoryWithItems {
-      getInventoryWithItemsByOwnerName(
-        nameTerm: $name
+      getInventoryWithItemsById(
+        id: $id
         pageIndex: $pageIndex
         pageSize: $pageSize
         orderBy: $orderBy
@@ -183,6 +183,29 @@ export const UpdateInventoryCurrencyMutationDocument = graphql(`
         gp
         pp
         cp
+      }
+    }
+  }
+`);
+
+export const InventoryListingFragment = graphql(/* GraphQL */ `
+  fragment InventoryListing on Inventory {
+    uuid
+    name
+  }
+`);
+
+export const InventoryListingQueryDocument = graphql(`
+  query inventoryListing {
+    inventory {
+      getInventories {
+        entities {
+          ...InventoryListing
+        }
+        pageIndex
+        pageSize
+        totalEntities
+        totalPages
       }
     }
   }

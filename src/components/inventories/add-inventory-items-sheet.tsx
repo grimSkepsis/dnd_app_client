@@ -102,7 +102,7 @@ export default function AddInventoryItemsSheet({
   }
 
   function onRemoveItemFromTransaction(
-    descriptionToDecrement: ItemQuantityAdjustmentDescription,
+    descriptionToDecrement: ItemQuantityAdjustmentDescription
   ) {
     if (descriptionToDecrement.quantity === 1) {
       setItemsToAdd((prev) => {
@@ -161,6 +161,7 @@ export default function AddInventoryItemsSheet({
           <SheetTitle>Select items to add to {inventoryName}</SheetTitle>
           <div>
             <Input type="text" placeholder="Search..." />
+            {/*TODO - get pagination working + infinite scroll*/}
             <ScrollArea className="h-48  rounded-md border">
               <div className="p-4">
                 {itemOptionsData?.items?.getItems?.entities.map((itemData) => {

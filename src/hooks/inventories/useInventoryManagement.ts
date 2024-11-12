@@ -8,6 +8,8 @@ import {
   SellItemsMutationDocument,
   UpdateItemMutationDocument,
   UpdateInventoryCurrencyMutationDocument,
+  InventoryListingQueryDocument,
+  InventoryListingFragment,
 } from "./graphql";
 import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
@@ -51,10 +53,14 @@ export default function useInventoryManagement() {
     UpdateInventoryCurrencyMutationDocument
   );
 
+  const { data: inventoryListingData, refetch: refetchInventoryListing } =
+    useSuspenseQuery(InventoryListingQueryDocument);
+
   const { data: inventoryAndItemsData, refetch: refetchInventoryAndItemsData } =
     useSuspenseQuery(InventoryWithItemsListingQueryDocument, {
       variables: {
-        name: "Thorrun",
+        //TODO - get session and default inventory working (or empty state?)
+        id: "1812136d-427b-46cb-82b3-d8309b7f4607",
         pageIndex: 0,
         pageSize: 10,
         orderBy: DEFAULT_SORTING_STATE[0].id,
@@ -71,9 +77,14 @@ export default function useInventoryManagement() {
       },
     });
 
+  const inventoryFragmentData = useFragment(
+    InventoryListingFragment,
+    inventoryListingData.inventory.getInventories.entities
+  );
+
   const inventoryAndItemsFragmentData = useFragment(
     InventoryWithItemsListingFragment,
-    inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsByOwnerName
+    inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsById
   );
 
   const inventoryItemsPaginationState = isNil(
@@ -213,8 +224,9 @@ export default function useInventoryManagement() {
     await Promise.all([refetchItemDetails(), refetchInventoryAndItemsData()]);
   }
 
+  //TODO - break into own hook
   async function onSelectInventory(inventoryId: string) {
-    console.log("SELECTED INVENTORY ", inventoryId);
+    refetchInventoryAndItemsData({ id: inventoryId, pageIndex: 0 });
   }
 
   const {
@@ -244,6 +256,7 @@ export default function useInventoryManagement() {
     onUpdateItem,
     onSellItem,
     onUpdateCurrency,
+    //TODO - fetch traits properly
     traitOptions: [
       "Consumable",
       "Portion",
@@ -254,10 +267,11 @@ export default function useInventoryManagement() {
     ]
       .sort((a, b) => a.localeCompare(b))
       .map((trait) => ({ value: trait, label: trait })),
-    inventoryOptions: [
-      { value: inventoryId, label: inventoryName },
-      { value: "blah", label: "Blah Value" },
-    ],
+    inventoryOptions: inventoryFragmentData.map((inventory) => ({
+      value: inventory.uuid,
+      label: inventory.name,
+    })),
     onSelectInventory,
+    inventoryListingData,
   };
 }

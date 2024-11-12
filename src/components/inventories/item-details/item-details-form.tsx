@@ -154,6 +154,7 @@ export function ItemDetailsForm({
           name="traits"
           render={({ field }) => (
             <FormItem>
+              {/* TODO - get trait creation and editing working */}
               <FormLabel>Traits</FormLabel>
               <FormControl>
                 <div>
@@ -190,7 +191,7 @@ export function ItemDetailsForm({
                       <SelectItem key={value} value={value}>
                         {label}
                       </SelectItem>
-                    ),
+                    )
                   )}
                 </SelectContent>
               </Select>
