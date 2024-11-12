@@ -18,15 +18,16 @@ import { DEFAULT_PAGINATION_STATE } from "../pagination/types";
 import { ItemQuantityAdjustmentDescription } from "./types";
 import { InventoryItemQuantityAdjustmentParams } from "@/gql/graphql";
 import { ItemFormProperties } from "@/components/inventories/item-details/types";
+import { CurrencyData } from "@/components/inventories/currency/types";
 
 export default function useInventoryManagement() {
   const DEFAULT_SORTING_STATE: SortingState = [{ id: "name", desc: false }];
   const [inventoryItemsSorting, setInventoryItemsSorting] = useState(
-    DEFAULT_SORTING_STATE,
+    DEFAULT_SORTING_STATE
   );
 
   const [adjustInventoryItemQuantity] = useMutation(
-    AdjustItemQuantityMutationDocument,
+    AdjustItemQuantityMutationDocument
   );
 
   const [sellItems] = useMutation(SellItemsMutationDocument);
@@ -67,11 +68,11 @@ export default function useInventoryManagement() {
 
   const inventoryAndItemsFragmentData = useFragment(
     InventoryWithItemsListingFragment,
-    inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsByOwnerName,
+    inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsByOwnerName
   );
 
   const inventoryItemsPaginationState = isNil(
-    inventoryAndItemsFragmentData?.items,
+    inventoryAndItemsFragmentData?.items
   )
     ? DEFAULT_PAGINATION_STATE
     : {
@@ -117,15 +118,15 @@ export default function useInventoryManagement() {
         orderDirection: isEmpty(newInventoryItemsSorting)
           ? "desc"
           : newInventoryItemsSorting[0].desc
-            ? "DESC"
-            : "ASC",
+          ? "DESC"
+          : "ASC",
       });
     }
   }
 
   async function onAdjustInventoryItemQuantity(
     inventoryId: string,
-    items: InventoryItemQuantityAdjustmentParams[],
+    items: InventoryItemQuantityAdjustmentParams[]
   ) {
     const res = await adjustInventoryItemQuantity({
       variables: {
@@ -142,14 +143,14 @@ export default function useInventoryManagement() {
 
   async function onAddItems(
     inventoryId: string,
-    items: ItemQuantityAdjustmentDescription[],
+    items: ItemQuantityAdjustmentDescription[]
   ) {
     await onAdjustInventoryItemQuantity(
       inventoryId,
       items.map((item) => ({
         itemId: item.item.uuid,
         quantityChange: item.quantity,
-      })),
+      }))
     );
     await refetchInventoryAndItemsData();
   }
@@ -184,6 +185,10 @@ export default function useInventoryManagement() {
 
   async function onViewItemDetails(id: string) {
     getDetailedItem({ variables: { id } });
+  }
+
+  async function onUpdateCurrency(inventoryId: string, currency: CurrencyData) {
+    console.log("CURRENCY TO UPDATE ", currency);
   }
 
   async function onUpdateItem(id: string, params: ItemFormProperties) {
@@ -223,6 +228,7 @@ export default function useInventoryManagement() {
     itemDetailsData,
     onUpdateItem,
     onSellItem,
+    onUpdateCurrency,
     traitOptions: [
       "Consumable",
       "Portion",

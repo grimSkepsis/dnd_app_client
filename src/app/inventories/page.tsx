@@ -33,6 +33,7 @@ export default function Page() {
     traitOptions,
     onUpdateItem,
     currency,
+    onUpdateCurrency,
   } = useInventoryManagement();
 
   function onPaginationChange(state: Updater<PaginationState>) {
@@ -66,7 +67,10 @@ export default function Page() {
     <main>
       <div className="container mx-auto py-10">
         <div className="flex gap-4 justify-between place-items-center mb-3">
-          <InventoryCurrency data={currency} />
+          <InventoryCurrency
+            data={currency}
+            onUpdate={partial(onUpdateCurrency, inventoryId)}
+          />
           <Button
             variant="outline"
             size="sm"
@@ -96,7 +100,7 @@ export default function Page() {
         <DataTable
           columns={getInventoryColumns(
             partial(onUseItem, inventoryId),
-            partial(onSellItem, inventoryId),
+            partial(onSellItem, inventoryId)
           )}
           data={inventoryItems}
           onRowClick={(row) => void onViewItemDetails(row.uuid)}
