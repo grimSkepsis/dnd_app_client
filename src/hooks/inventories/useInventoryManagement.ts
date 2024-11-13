@@ -215,7 +215,6 @@ export default function useInventoryManagement() {
   }
 
   async function onUpdateCurrency(inventoryId: string, currency: CurrencyData) {
-    console.log("CURRENCY TO UPDATE ", currency);
     await updateInventoryCurrency({
       variables: {
         inventoryId,
@@ -225,7 +224,6 @@ export default function useInventoryManagement() {
   }
 
   async function onUpdateItem(id: string, params: ItemFormProperties) {
-    console.log("PARAMS TO UPDATE ", params);
     await updateItem({
       variables: {
         id,

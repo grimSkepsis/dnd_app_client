@@ -77,13 +77,8 @@ export function ItemDetailsForm({
   }, [data, form]);
 
   function onSubmit(values: ItemFormProperties) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-
     handleSubmit(values);
   }
-
-  // console.log("FORM ", form.getValues());
 
   return (
     <Form {...form}>
