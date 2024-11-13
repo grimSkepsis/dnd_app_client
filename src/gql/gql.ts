@@ -27,6 +27,8 @@ const documents = {
     "\n  mutation updateInventoryCurrency(\n    $inventoryId: String!\n    $params: InventoryCurrencyChangeInput!\n  ) {\n    inventory {\n      updateInventoryCurrency(inventoryId: $inventoryId, params: $params) {\n        uuid\n        name\n        cp\n        sp\n        gp\n        pp\n        cp\n      }\n    }\n  }\n": types.UpdateInventoryCurrencyDocument,
     "\n  fragment InventoryListing on Inventory {\n    uuid\n    name\n  }\n": types.InventoryListingFragmentDoc,
     "\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          ...InventoryListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n": types.InventoryListingDocument,
+    "\n  fragment TraitListing on Trait {\n    name\n    description\n  }\n": types.TraitListingFragmentDoc,
+    "\n  query traitListing {\n    items {\n      getTraits {\n        ...TraitListing\n      }\n    }\n  }\n": types.TraitListingDocument,
 };
 
 /**
@@ -99,6 +101,14 @@ export function graphql(source: "\n  fragment InventoryListing on Inventory {\n 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          ...InventoryListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n"): (typeof documents)["\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          ...InventoryListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment TraitListing on Trait {\n    name\n    description\n  }\n"): (typeof documents)["\n  fragment TraitListing on Trait {\n    name\n    description\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query traitListing {\n    items {\n      getTraits {\n        ...TraitListing\n      }\n    }\n  }\n"): (typeof documents)["\n  query traitListing {\n    items {\n      getTraits {\n        ...TraitListing\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

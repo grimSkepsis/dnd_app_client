@@ -210,3 +210,20 @@ export const InventoryListingQueryDocument = graphql(`
     }
   }
 `);
+
+export const TraitListingFragment = graphql(/* GraphQL */ `
+  fragment TraitListing on Trait {
+    name
+    description
+  }
+`);
+
+export const TraitListingQueryDocument = graphql(`
+  query traitListing {
+    items {
+      getTraits {
+        ...TraitListing
+      }
+    }
+  }
+`);

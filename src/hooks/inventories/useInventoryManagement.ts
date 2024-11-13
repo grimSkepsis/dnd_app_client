@@ -10,6 +10,8 @@ import {
   UpdateInventoryCurrencyMutationDocument,
   InventoryListingQueryDocument,
   InventoryListingFragment,
+  TraitListingQueryDocument,
+  TraitListingFragment,
 } from "./graphql";
 import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
@@ -76,6 +78,15 @@ export default function useInventoryManagement() {
         },
       },
     });
+
+  const { data: traitListingData } = useSuspenseQuery(
+    TraitListingQueryDocument
+  );
+
+  const traitFragmentData = useFragment(
+    TraitListingFragment,
+    traitListingData.items.getTraits
+  );
 
   const inventoryFragmentData = useFragment(
     InventoryListingFragment,
@@ -257,16 +268,10 @@ export default function useInventoryManagement() {
     onSellItem,
     onUpdateCurrency,
     //TODO - fetch traits properly
-    traitOptions: [
-      "Consumable",
-      "Portion",
-      "Magical",
-      "Vitality",
-      "Healing",
-      "Toolkit",
-    ]
-      .sort((a, b) => a.localeCompare(b))
-      .map((trait) => ({ value: trait, label: trait })),
+    traitOptions: traitFragmentData.map((trait) => ({
+      value: trait.name,
+      label: trait.name,
+    })),
     inventoryOptions: inventoryFragmentData.map((inventory) => ({
       value: inventory.uuid,
       label: inventory.name,
