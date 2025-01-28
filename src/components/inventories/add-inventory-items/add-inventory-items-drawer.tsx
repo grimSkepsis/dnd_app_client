@@ -125,32 +125,43 @@ export function AddInventoryItemsDrawer({
               onAddItemToTransaction={onAddItemToTransaction}
               itemsToAdd={itemsToAdd}
             />
-            <h4>Adding...</h4>
-            {Object.values(itemsToAdd).map((description) => (
-              <InventoryItemAdditionOption
-                description={description}
-                key={description.item.uuid}
-                onClick={onRemoveItemFromTransaction}
+
+            <div className="flex flex-col gap-2 mt-4">
+              <h4>Create new item</h4>
+              <Input
+                type="text"
+                placeholder="Enter new item name..."
+                value={newItemName}
+                onChange={(e) => setNewItemName(e.target.value)}
               />
-            ))}
-            <Button
-              disabled={isEmpty(Object.values(itemsToAdd))}
-              onClick={onSubmitAddItems}
-            >
-              Submit
-            </Button>
-            <Input
-              type="text"
-              placeholder="Enter new item name..."
-              value={newItemName}
-              onChange={(e) => setNewItemName(e.target.value)}
-            />
-            <Button
-              disabled={isEmpty(newItemName)}
-              onClick={() => void onCreateItem()}
-            >
-              Create
-            </Button>
+              <Button
+                disabled={isEmpty(newItemName)}
+                onClick={() => void onCreateItem()}
+              >
+                Create
+              </Button>
+            </div>
+            {!isEmpty(itemsToAdd) && (
+              <div className="flex flex-col gap-2 mt-4">
+                <h4>Adding...</h4>
+                {Object.values(itemsToAdd).map((description) => (
+                  <InventoryItemAdditionOption
+                    description={description}
+                    key={description.item.uuid}
+                    onClick={onRemoveItemFromTransaction}
+                  />
+                ))}
+                <Button
+                  disabled={isEmpty(Object.values(itemsToAdd))}
+                  onClick={onSubmitAddItems}
+                >
+                  Submit
+                </Button>
+                <Button variant="outline" onClick={() => setItemsToAdd({})}>
+                  Clear
+                </Button>
+              </div>
+            )}
           </div>
         </SheetHeader>
       </SheetContent>

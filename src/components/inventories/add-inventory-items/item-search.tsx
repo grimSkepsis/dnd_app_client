@@ -17,7 +17,7 @@ export function ItemSearch({
   itemsToAdd,
 }: ItemSearchProps) {
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       <Input type="text" placeholder="Search..." />
       {/*TODO - get pagination working + infinite scroll*/}
       <ScrollArea className="h-48  rounded-md border">
