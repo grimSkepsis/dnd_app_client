@@ -11,6 +11,11 @@ type ItemSearchProps = {
   itemsToAdd: Record<string, ItemQuantityAdjustmentDescription>;
 };
 
+/**
+ * Component for searching for items to add to an inventory
+ * @param param0
+ * @returns
+ */
 export function ItemSearch({
   itemOptionsData,
   onAddItemToTransaction,
