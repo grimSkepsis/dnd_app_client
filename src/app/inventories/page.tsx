@@ -3,7 +3,7 @@ import { getInventoryColumns } from "./columns";
 import { PaginationState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import { useState } from "react";
-import AddInventoryItemsSheet from "@/components/inventories/add-inventory-items-sheet";
+import { AddInventoryItemsDrawer } from "@/components/inventories/add-inventory-items/add-inventory-items-drawer";
 import { Button } from "@/components/ui/button";
 import useInventoryManagement from "@/hooks/inventories/useInventoryManagement";
 import partial from "lodash/partial";
@@ -90,7 +90,7 @@ export default function Page() {
           </Button>
         </div>
 
-        <AddInventoryItemsSheet
+        <AddInventoryItemsDrawer
           onCreateItem={onQuickCreateItem}
           inventoryId={inventoryId}
           inventoryName={inventoryName}

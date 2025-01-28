@@ -1,73 +1,27 @@
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { FragmentType, useFragment } from "@/gql";
 import { ItemListingFragment, ItemsListingQuery } from "@/gql/graphql";
 import { useState } from "react";
 import isNil from "lodash/isNil";
 
 import isEmpty from "lodash/isEmpty";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { toast } from "sonner";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { ItemListingFragmentDocument } from "@/hooks/inventories/graphql";
 import {
   InventoryItemAdjustmentCallback,
   ItemQuantityAdjustmentDescription,
 } from "@/hooks/inventories/types";
+import { InventoryItemAdditionOption } from "./inventory-item-option";
+import { InventoryItemOption } from "./inventory-item-option";
 
-type InventoryItemOptionProps = {
-  data: FragmentType<typeof ItemListingFragmentDocument>;
-  onClick: (item: ItemListingFragment) => void;
-  isInTransationList?: boolean;
-};
-
-function InventoryItemOption({
-  data,
-  onClick,
-  isInTransationList,
-}: InventoryItemOptionProps) {
-  const item = useFragment(ItemListingFragmentDocument, data);
-  return (
-    <div
-      className={[
-        "text-sm hover:bg-sky-700 cursor-pointer p-1 rounded-md",
-        isInTransationList ? "text-muted-foreground" : "",
-      ].join(" ")}
-      onClick={() => onClick(item)}
-    >
-      {item.name}
-    </div>
-  );
-}
-
-type InventoryItemAdditionOptionProps = {
-  description: ItemQuantityAdjustmentDescription;
-  onClick: (description: ItemQuantityAdjustmentDescription) => void;
-};
-function InventoryItemAdditionOption({
-  description,
-  onClick,
-}: InventoryItemAdditionOptionProps) {
-  return (
-    <div
-      className="text-sm hover:bg-sky-700 cursor-pointer p-1 rounded-md"
-      onClick={() => onClick(description)}
-    >
-      {description.item.name}{" "}
-      {description.quantity > 1 ? `(${description.quantity})` : ""}
-    </div>
-  );
-}
-
-type AddInventoryItemsSheetProps = {
+type AddInventoryItemsDrawerProps = {
   itemOptionsData: ItemsListingQuery;
   inventoryName: string;
   inventoryId: string;
@@ -75,7 +29,12 @@ type AddInventoryItemsSheetProps = {
   onCreateItem: (name: string) => Promise<void>;
 } & DialogProps;
 
-export default function AddInventoryItemsSheet({
+/**
+ * Drawer for browsing possible items to add to the inventory and providing a way to quickly create stand in items that have not been defined yet
+ * @param param0
+ * @returns
+ */
+export function AddInventoryItemsDrawer({
   itemOptionsData,
   onOpenChange: handleOpenChange,
   inventoryId,
@@ -83,7 +42,7 @@ export default function AddInventoryItemsSheet({
   onAddItems,
   onCreateItem: handleCreateItem,
   ...dialogProps
-}: AddInventoryItemsSheetProps) {
+}: AddInventoryItemsDrawerProps) {
   const [itemsToAdd, setItemsToAdd] = useState<
     Record<string, ItemQuantityAdjustmentDescription>
   >({});
