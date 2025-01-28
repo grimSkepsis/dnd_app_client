@@ -20,6 +20,7 @@ import {
 } from "@/hooks/inventories/types";
 import { InventoryItemAdditionOption } from "./inventory-item-option";
 import { InventoryItemOption } from "./inventory-item-option";
+import { ItemSearch } from "./item-search";
 
 type AddInventoryItemsDrawerProps = {
   itemOptionsData: ItemsListingQuery;
@@ -119,23 +120,11 @@ export function AddInventoryItemsDrawer({
         <SheetHeader>
           <SheetTitle>Select items to add to {inventoryName}</SheetTitle>
           <div>
-            <Input type="text" placeholder="Search..." />
-            {/*TODO - get pagination working + infinite scroll*/}
-            <ScrollArea className="h-48  rounded-md border">
-              <div className="p-4">
-                {itemOptionsData?.items?.getItems?.entities.map((itemData) => {
-                  const castItem = itemData as ItemListingFragment;
-                  return (
-                    <InventoryItemOption
-                      data={itemData}
-                      key={castItem.uuid}
-                      onClick={onAddItemToTransaction}
-                      isInTransationList={!isNil(itemsToAdd[castItem.uuid])}
-                    />
-                  );
-                })}
-              </div>
-            </ScrollArea>
+            <ItemSearch
+              itemOptionsData={itemOptionsData}
+              onAddItemToTransaction={onAddItemToTransaction}
+              itemsToAdd={itemsToAdd}
+            />
             <h4>Adding...</h4>
             {Object.values(itemsToAdd).map((description) => (
               <InventoryItemAdditionOption
