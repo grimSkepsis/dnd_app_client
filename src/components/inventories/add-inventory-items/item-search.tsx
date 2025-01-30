@@ -2,8 +2,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { ItemListingFragment, ItemsListingQuery } from "@/gql/graphql";
 import { InventoryItemOption } from "./inventory-item-option";
-import { isNil } from "lodash";
+import { debounce, isNil } from "lodash";
 import { ItemQuantityAdjustmentDescription } from "@/hooks/inventories/types";
+import useInventoryManagement from "@/hooks/inventories/useInventoryManagement";
 
 type ItemSearchProps = {
   itemOptionsData: ItemsListingQuery;
@@ -21,11 +22,20 @@ export function ItemSearch({
   onAddItemToTransaction,
   itemsToAdd,
 }: ItemSearchProps) {
+  const { onLoadMoreItemOptions } = useInventoryManagement();
+  function onReachBottom() {
+    console.log("reached bottom");
+    onLoadMoreItemOptions();
+  }
   return (
     <div className="flex flex-col gap-2">
       <Input type="text" placeholder="Search..." />
       {/*TODO - get pagination working + infinite scroll*/}
-      <ScrollArea className="h-48  rounded-md border">
+      <ScrollArea
+        className="h-48  rounded-md border"
+        onReachBottom={debounce(onReachBottom, 1000)}
+        bottomOffset={5}
+      >
         <div className="p-4">
           {itemOptionsData?.items?.getItems?.entities.map((itemData) => {
             const castItem = itemData as ItemListingFragment;

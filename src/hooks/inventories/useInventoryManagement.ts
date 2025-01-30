@@ -13,12 +13,17 @@ import {
   TraitListingQueryDocument,
   TraitListingFragment,
 } from "./graphql";
-import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
+import {
+  NetworkStatus,
+  useLazyQuery,
+  useMutation,
+  useSuspenseQuery,
+} from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
 import { useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import { useFragment } from "@/gql";
-import { isNil } from "lodash";
+import { debounce, isNil } from "lodash";
 import { DEFAULT_PAGINATION_STATE } from "../pagination/types";
 import { ItemQuantityAdjustmentDescription } from "./types";
 import { InventoryItemQuantityAdjustmentParams } from "@/gql/graphql";
@@ -111,24 +116,27 @@ export default function useInventoryManagement() {
 
   const inventoryItems = inventoryAndItemsFragmentData?.items?.entities ?? [];
 
-  const { data: itemOptionsData, refetch: refetchItemOptions } =
-    useSuspenseQuery(ItemsListingQueryDocument, {
-      variables: {
-        pageIndex: 0,
-        pageSize: 10,
-        orderBy: DEFAULT_SORTING_STATE[0].id,
-        orderDirection: DEFAULT_SORTING_STATE[0].desc ? "DESC" : "ASC",
-        filter: {
-          // excludedTraits: ["Toolkit"],
-        },
+  const {
+    data: itemOptionsData,
+    refetch: refetchItemOptions,
+    networkStatus: itemOptionsStatus,
+  } = useSuspenseQuery(ItemsListingQueryDocument, {
+    variables: {
+      pageIndex: 0,
+      pageSize: 10,
+      orderBy: DEFAULT_SORTING_STATE[0].id,
+      orderDirection: DEFAULT_SORTING_STATE[0].desc ? "DESC" : "ASC",
+      filter: {
+        // excludedTraits: ["Toolkit"],
       },
+    },
 
-      context: {
-        fetchOptions: {
-          next: { revalidate: 5 },
-        },
+    context: {
+      fetchOptions: {
+        next: { revalidate: 5 },
       },
-    });
+    },
+  });
 
   function onInventoryItemsSortChange(state: Updater<SortingState>) {
     if (typeof state === "function") {
@@ -238,6 +246,21 @@ export default function useInventoryManagement() {
     refetchInventoryAndItemsData({ id: inventoryId, pageIndex: 0 });
   }
 
+  async function onLoadMoreItemOptions() {
+    const currPageIndex = itemOptionsData?.items?.getItems?.pageIndex ?? 0;
+    if (
+      currPageIndex + 1 < (itemOptionsData?.items?.getItems?.totalPages ?? 1) &&
+      itemOptionsStatus !== NetworkStatus.loading
+    ) {
+      console.log("getting more items");
+      refetchItemOptions({
+        pageIndex: currPageIndex + 1,
+      });
+    } else {
+      console.log("no items to get");
+    }
+  }
+
   const {
     name: inventoryName,
     uuid: inventoryId,
@@ -276,5 +299,6 @@ export default function useInventoryManagement() {
     })),
     onSelectInventory,
     inventoryListingData,
+    onLoadMoreItemOptions,
   };
 }
