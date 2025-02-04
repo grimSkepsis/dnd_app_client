@@ -119,11 +119,12 @@ export default function useInventoryManagement() {
   const {
     data: itemOptionsData,
     refetch: refetchItemOptions,
+    fetchMore: fetchMoreItemOptions,
     networkStatus: itemOptionsStatus,
   } = useSuspenseQuery(ItemsListingQueryDocument, {
     variables: {
       pageIndex: 0,
-      pageSize: 10,
+      pageSize: 5,
       orderBy: DEFAULT_SORTING_STATE[0].id,
       orderDirection: DEFAULT_SORTING_STATE[0].desc ? "DESC" : "ASC",
       filter: {
@@ -253,8 +254,10 @@ export default function useInventoryManagement() {
       itemOptionsStatus !== NetworkStatus.loading
     ) {
       console.log("getting more items");
-      refetchItemOptions({
-        pageIndex: currPageIndex + 1,
+      fetchMoreItemOptions({
+        variables: {
+          pageIndex: currPageIndex + 1,
+        },
       });
     } else {
       console.log("no items to get");

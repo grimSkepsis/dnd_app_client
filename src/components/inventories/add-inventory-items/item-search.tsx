@@ -23,6 +23,7 @@ export function ItemSearch({
   itemsToAdd,
 }: ItemSearchProps) {
   const { onLoadMoreItemOptions } = useInventoryManagement();
+  console.log("items to choose from: ", itemOptionsData);
   function onReachBottom() {
     console.log("reached bottom");
     onLoadMoreItemOptions();
@@ -32,7 +33,7 @@ export function ItemSearch({
       <Input type="text" placeholder="Search..." />
       {/*TODO - get pagination working + infinite scroll*/}
       <ScrollArea
-        className="h-48  rounded-md border"
+        className="h-24 rounded-md border"
         onReachBottom={debounce(onReachBottom, 1000)}
         bottomOffset={5}
       >
