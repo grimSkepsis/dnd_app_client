@@ -50,7 +50,6 @@ type MultiComboBoxProps = {
   options: Option[];
   defaultValues: string[];
   onChange: (values: string[]) => void;
-  container?: Element;
   placeholder?: string;
   onCreateOption?: (value: string) => Promise<Option>;
 };
@@ -61,7 +60,6 @@ const DEAULT_CREATE_OPTION = async (label: string) => ({
 });
 
 export function MultiComboBox({
-  container,
   defaultValues,
   options: defaultOptions,
   placeholder,
@@ -108,7 +106,7 @@ export function MultiComboBox({
               ))}
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" container={container}>
+      <PopoverContent className="w-[200px] p-0">
         <Command>
           <CommandInput
             placeholder="Search traits..."

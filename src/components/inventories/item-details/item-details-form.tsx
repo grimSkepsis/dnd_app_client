@@ -155,7 +155,6 @@ export function ItemDetailsForm({
                 <div>
                   <MultiComboBox
                     placeholder="No traits set"
-                    container={parentRef?.current}
                     onChange={field.onChange}
                     defaultValues={field.value}
                     options={traitOptions}
@@ -180,7 +179,7 @@ export function ItemDetailsForm({
                     <SelectValue placeholder="No cost selected" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent container={parentRef?.current}>
+                <SelectContent>
                   {Object.entries(ACTIVATION_ACTION_COST_OPTIONS).map(
                     ([value, label]) => (
                       <SelectItem key={value} value={value}>
