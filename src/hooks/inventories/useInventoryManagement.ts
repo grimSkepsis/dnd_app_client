@@ -9,7 +9,6 @@ import {
   UpdateItemMutationDocument,
   UpdateInventoryCurrencyMutationDocument,
   InventoryListingQueryDocument,
-  InventoryListingFragment,
   TraitListingQueryDocument,
   TraitListingFragment,
 } from "./graphql";
@@ -88,10 +87,7 @@ export default function useInventoryManagement() {
     traitListingData.items.getTraits
   );
 
-  const inventoryFragmentData = useFragment(
-    InventoryListingFragment,
-    inventoryListingData.inventory.getInventories.entities
-  );
+  const inventoryFragmentData = inventoryListingData.inventory.getInventories.entities;
 
   const inventoryAndItemsFragmentData = useFragment(
     InventoryWithItemsListingFragment,
