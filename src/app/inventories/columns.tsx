@@ -118,11 +118,11 @@ export function getInventoryColumns(
           <CellRenderer<InventoryItemListingFragment>
             rowData={props.row.original}
             getDisplayValue={(data) =>
-              (
+              data.traits?.length ? (
                 <div className="flex flex-wrap gap-2">
-                  {data.traits?.map((t) => <Tag key={t} label={t} />)}{" "}
+                  {data.traits.map((t) => <Tag key={t} label={t} />)}
                 </div>
-              ) ?? "???"
+              ) : "???"
             }
           />
         );
