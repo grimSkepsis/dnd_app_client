@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import * as React from "react";
 import Link from "next/link";
 
@@ -59,18 +57,18 @@ export function MainNav() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link href="/" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+          <NavigationMenuLink asChild>
+            <Link href="/" className={navigationMenuTriggerStyle()}>
               Home
-            </NavigationMenuLink>
-          </Link>
+            </Link>
+          </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/inventories" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+          <NavigationMenuLink asChild>
+            <Link href="/inventories" className={navigationMenuTriggerStyle()}>
               Inventories
-            </NavigationMenuLink>
-          </Link>
+            </Link>
+          </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
