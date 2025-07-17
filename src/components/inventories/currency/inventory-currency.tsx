@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormField } from "@/components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 import { toast } from "sonner";
 
 type InventoryCurrencyProps = {
@@ -49,11 +49,11 @@ export function InventoryCurrency({
 
   return (
     <div className="flex gap-3">
-      <form
-        {...form}
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex gap-3"
-      >
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex gap-3"
+        >
         <div className="flex gap-3 flex-col">
           <p>Platinum: {pp}</p>
           {isEditing && (
@@ -107,7 +107,8 @@ export function InventoryCurrency({
             Save
           </Button>
         )}
-      </form>
+        </form>
+      </Form>
       <button
         onClick={onToggleEdit}
         className="rounded-sm h-fit opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
