@@ -1,20 +1,20 @@
 "use client";
 
-import { ApolloClient, ApolloLink, HttpLink } from "@apollo/client";
+import { ApolloLink, HttpLink } from "@apollo/client";
 import {
   ApolloNextAppProvider,
-  NextSSRApolloClient,
-  NextSSRInMemoryCache,
+  ApolloClient,
+  InMemoryCache,
   SSRMultipartLink,
-} from "@apollo/experimental-nextjs-app-support/ssr";
+} from "@apollo/client-integration-nextjs";
 
 function makeClient() {
   const httpLink = new HttpLink({
     uri: "http://localhost:3002/graphql",
   });
 
-  return new NextSSRApolloClient({
-    cache: new NextSSRInMemoryCache({
+  return new ApolloClient({
+    cache: new InMemoryCache({
       typePolicies: {
         Query: {
           fields: {
