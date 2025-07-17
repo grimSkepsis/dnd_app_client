@@ -2,7 +2,7 @@ import { CodegenConfig } from "@graphql-codegen/cli";
 import dotenv from "dotenv";
 
 // Load environment variables from .env file
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const config: CodegenConfig = {
   schema: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
