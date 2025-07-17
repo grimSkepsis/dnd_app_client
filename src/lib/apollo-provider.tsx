@@ -14,7 +14,22 @@ function makeClient() {
   });
 
   return new NextSSRApolloClient({
-    cache: new NextSSRInMemoryCache(),
+    cache: new NextSSRInMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            items: {
+              // Allow different ItemQuery objects to coexist
+              merge: false,
+            },
+          },
+        },
+        ItemQuery: {
+          // Don't cache ItemQuery objects since they don't have stable IDs
+          keyFields: false,
+        },
+      },
+    }),
     link:
       typeof window === "undefined"
         ? ApolloLink.from([
