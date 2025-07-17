@@ -39,7 +39,8 @@ export default function ItemDetailsSheet({
     rawData?.items?.getItem,
   );
 
-  const dialogRef = useRef<HTMLDivElement>();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement | undefined>(undefined);
 
   function onOpenChange(isOpen: boolean) {
     handleOpenChange?.(isOpen);
@@ -103,7 +104,7 @@ export default function ItemDetailsSheet({
                 <ItemDetailsForm
                   data={data}
                   traitOptions={traitOptions}
-                  parentRef={dialogRef}
+                  parentRef={formRef}
                   onCancel={() => setIsEditing(false)}
                   onSubmit={onSubmit}
                 />

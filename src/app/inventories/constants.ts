@@ -13,7 +13,7 @@ export const DEFAULT_INVENTORY_DATA: InventoryWithItems = {
     name: "",
   },
   items: {
-    __typename: "PaginatedResponse",
+    __typename: "PaginatedInventoryItemResponse",
     entities: [],
     pageIndex: 0,
     pageSize: 0,

@@ -114,7 +114,12 @@ export default function Page() {
           )}
           data={inventoryItems}
           // TODO - fix type safety
-          onRowClick={(row) => void onViewItemDetails(row.uuid)}
+          onRowClick={(row) => {
+            // Log the structure to debug
+            console.log('Row structure:', row);
+            console.log('Row keys:', Object.keys(row));
+            void onViewItemDetails((row as any).uuid);
+          }}
           sortingState={inventoryItemsSorting}
           onPaginationChange={onPaginationChange}
           onSortingChange={onInventoryItemsSortChange}

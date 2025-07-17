@@ -242,7 +242,7 @@ export default function useInventoryManagement() {
     name: inventoryName,
     uuid: inventoryId,
     ...currency
-  } = inventoryAndItemsFragmentData?.inventory ?? { name: "", uuid: "" };
+  } = inventoryAndItemsFragmentData?.inventory ?? { name: "", uuid: "", pp: 0, gp: 0, sp: 0, cp: 0 };
 
   return {
     inventoryItemsSorting,

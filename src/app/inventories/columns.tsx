@@ -14,7 +14,7 @@ import { Tag } from "@/components/ui/tag";
 
 type CellRendererProps<T> = {
   rowData: FragmentType<typeof InventoryItemListingFragmentDocument>;
-  getDisplayValue: (data: T) => string | number | JSX.Element;
+  getDisplayValue: (data: T) => string | number | React.JSX.Element;
 };
 
 function CellRenderer<T>({ rowData, getDisplayValue }: CellRendererProps<T>) {
@@ -162,7 +162,7 @@ function InventoryItemActionRenderer({
   const [isUsing, setIsUsing] = useState(false);
   const [isSelling, setIsSelling] = useState(false);
 
-  async function onUseItem(e: Event) {
+  async function onUseItem(e: React.MouseEvent) {
     e.stopPropagation();
     try {
       setIsUsing(true);
@@ -177,7 +177,7 @@ function InventoryItemActionRenderer({
     setIsUsing(false);
   }
 
-  async function onSellItem(e: Event) {
+  async function onSellItem(e: React.MouseEvent) {
     e.stopPropagation();
     try {
       setIsSelling(true);
