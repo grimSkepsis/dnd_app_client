@@ -10,9 +10,7 @@ import partial from "lodash/partial";
 import ItemDetailsSheet from "@/components/inventories/item-details/item-details-sheet";
 import { InventoryCurrency } from "@/components/inventories/currency/inventory-currency";
 import { InventorySelector } from "@/components/inventories/inventory-selector/inventorySelector";
-import { FragmentType, useFragment } from "@/gql";
-import { InventoryItemListingFragmentDocument } from "@/hooks/inventories/graphql";
-import { InventoryItemListingFragment } from "@/gql/graphql";
+import { InventoryItem } from "@/gql/graphql";
 
 export default function Page() {
   const [isAddItemsOpen, setIsAddItemsOpen] = useState(false);
@@ -84,8 +82,7 @@ export default function Page() {
         )}
         data={inventoryItems}
         onRowClick={(row) => {
-          const itemData = useFragment(InventoryItemListingFragmentDocument, row);
-          handleRowClick(itemData.uuid);
+          handleRowClick(row.uuid);
         }}
         sortingState={inventoryItemsSorting}
         onPaginationChange={onPaginationChange}

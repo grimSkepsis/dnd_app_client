@@ -283,7 +283,7 @@ export type Trait = {
   name: Scalars['String']['output'];
 };
 
-export type ItemListingFragment = { __typename?: 'Item', uuid: string, name?: string | null } & { ' $fragmentName'?: 'ItemListingFragment' };
+export type ItemListingFragment = { __typename?: 'Item', uuid: string, name?: string | null };
 
 export type ItemsListingQueryVariables = Exact<{
   pageIndex: Scalars['Int']['input'];
@@ -294,22 +294,16 @@ export type ItemsListingQueryVariables = Exact<{
 }>;
 
 
-export type ItemsListingQuery = { __typename?: 'QueryRoot', items: { __typename?: 'ItemQuery', getItems?: { __typename?: 'PaginatedItemResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<(
-        { __typename?: 'Item' }
-        & { ' $fragmentRefs'?: { 'ItemListingFragment': ItemListingFragment } }
-      )> } | null } };
+export type ItemsListingQuery = { __typename?: 'QueryRoot', items: { __typename?: 'ItemQuery', getItems?: { __typename?: 'PaginatedItemResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<{ __typename?: 'Item', uuid: string, name?: string | null }> } | null } };
 
-export type ItemDetailsFragment = { __typename?: 'Item', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, description?: string | null, activationCost?: string | null, usageRequirements?: string | null, effect?: string | null, traits?: Array<string> | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean } & { ' $fragmentName'?: 'ItemDetailsFragment' };
+export type ItemDetailsFragment = { __typename?: 'Item', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, description?: string | null, activationCost?: string | null, usageRequirements?: string | null, effect?: string | null, traits?: Array<string> | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean };
 
 export type ItemDetailsQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type ItemDetailsQuery = { __typename?: 'QueryRoot', items: { __typename?: 'ItemQuery', getItem?: (
-      { __typename?: 'Item' }
-      & { ' $fragmentRefs'?: { 'ItemDetailsFragment': ItemDetailsFragment } }
-    ) | null } };
+export type ItemDetailsQuery = { __typename?: 'QueryRoot', items: { __typename?: 'ItemQuery', getItem?: { __typename?: 'Item', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, description?: string | null, activationCost?: string | null, usageRequirements?: string | null, effect?: string | null, traits?: Array<string> | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean } | null } };
 
 export type AdjustItemsForInventoryMutationVariables = Exact<{
   inventoryId: Scalars['String']['input'];
@@ -340,17 +334,11 @@ export type UpdateItemMutationVariables = Exact<{
 }>;
 
 
-export type UpdateItemMutation = { __typename?: 'MutationRoot', items: { __typename?: 'ItemMutation', updateItem?: (
-      { __typename?: 'Item' }
-      & { ' $fragmentRefs'?: { 'ItemDetailsFragment': ItemDetailsFragment } }
-    ) | null } };
+export type UpdateItemMutation = { __typename?: 'MutationRoot', items: { __typename?: 'ItemMutation', updateItem?: { __typename?: 'Item', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, description?: string | null, activationCost?: string | null, usageRequirements?: string | null, effect?: string | null, traits?: Array<string> | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean } | null } };
 
-export type InventoryItemListingFragment = { __typename?: 'InventoryItem', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, quantity: number, traits?: Array<string> | null, description?: string | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean } & { ' $fragmentName'?: 'InventoryItemListingFragment' };
+export type InventoryItemListingFragment = { __typename?: 'InventoryItem', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, quantity: number, traits?: Array<string> | null, description?: string | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean };
 
-export type InventoryWithItemsListingFragment = { __typename?: 'InventoryWithItems', inventory: { __typename?: 'Inventory', uuid: string, name: string, cp: number, sp: number, gp: number, pp: number }, items: { __typename?: 'PaginatedInventoryItemResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<(
-      { __typename?: 'InventoryItem' }
-      & { ' $fragmentRefs'?: { 'InventoryItemListingFragment': InventoryItemListingFragment } }
-    )> } } & { ' $fragmentName'?: 'InventoryWithItemsListingFragment' };
+export type InventoryWithItemsListingFragment = { __typename?: 'InventoryWithItems', inventory: { __typename?: 'Inventory', uuid: string, name: string, cp: number, sp: number, gp: number, pp: number }, items: { __typename?: 'PaginatedInventoryItemResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<{ __typename?: 'InventoryItem', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, quantity: number, traits?: Array<string> | null, description?: string | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean }> } };
 
 export type InventoryWithItemsListingQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -362,10 +350,7 @@ export type InventoryWithItemsListingQueryVariables = Exact<{
 }>;
 
 
-export type InventoryWithItemsListingQuery = { __typename?: 'QueryRoot', inventoryWithItems: { __typename?: 'InventoryWithItemsQuery', getInventoryWithItemsById?: (
-      { __typename?: 'InventoryWithItems' }
-      & { ' $fragmentRefs'?: { 'InventoryWithItemsListingFragment': InventoryWithItemsListingFragment } }
-    ) | null } };
+export type InventoryWithItemsListingQuery = { __typename?: 'QueryRoot', inventoryWithItems: { __typename?: 'InventoryWithItemsQuery', getInventoryWithItemsById?: { __typename?: 'InventoryWithItems', inventory: { __typename?: 'Inventory', uuid: string, name: string, cp: number, sp: number, gp: number, pp: number }, items: { __typename?: 'PaginatedInventoryItemResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<{ __typename?: 'InventoryItem', uuid: string, name?: string | null, value?: number | null, displayValue?: string | null, quantity: number, traits?: Array<string> | null, description?: string | null, bulk?: number | null, displayBulk?: string | null, level?: number | null, isConsumable: boolean }> } } | null } };
 
 export type UpdateInventoryCurrencyMutationVariables = Exact<{
   inventoryId: Scalars['String']['input'];
@@ -380,15 +365,12 @@ export type InventoryListingQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type InventoryListingQuery = { __typename?: 'QueryRoot', inventory: { __typename?: 'InventoryQuery', getInventories: { __typename?: 'PaginatedInventoryResponse', pageIndex: number, pageSize: number, totalEntities: number, totalPages: number, entities: Array<{ __typename?: 'Inventory', uuid: string, name: string }> } } };
 
-export type TraitListingFragment = { __typename?: 'Trait', name: string, description?: string | null } & { ' $fragmentName'?: 'TraitListingFragment' };
+export type TraitListingFragment = { __typename?: 'Trait', name: string, description?: string | null };
 
 export type TraitListingQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TraitListingQuery = { __typename?: 'QueryRoot', items: { __typename?: 'ItemQuery', getTraits: Array<(
-      { __typename?: 'Trait' }
-      & { ' $fragmentRefs'?: { 'TraitListingFragment': TraitListingFragment } }
-    )> } };
+export type TraitListingQuery = { __typename?: 'QueryRoot', items: { __typename?: 'ItemQuery', getTraits: Array<{ __typename?: 'Trait', name: string, description?: string | null }> } };
 
 export const ItemListingFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemListing"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uuid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode<ItemListingFragment, unknown>;
 export const ItemDetailsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uuid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"displayValue"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"activationCost"}},{"kind":"Field","name":{"kind":"Name","value":"usageRequirements"}},{"kind":"Field","name":{"kind":"Name","value":"effect"}},{"kind":"Field","name":{"kind":"Name","value":"traits"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"bulk"}},{"kind":"Field","name":{"kind":"Name","value":"displayBulk"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"isConsumable"}}]}}]} as unknown as DocumentNode<ItemDetailsFragment, unknown>;

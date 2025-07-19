@@ -1,6 +1,5 @@
 import {
   AdjustItemQuantityMutationDocument,
-  InventoryWithItemsListingFragment,
   InventoryWithItemsListingQueryDocument,
   ItemDetailsQueryDocument,
   ItemsListingQueryDocument,
@@ -12,11 +11,11 @@ import {
   TraitListingQueryDocument,
   TraitListingFragment,
 } from "./graphql";
+import type { InventoryWithItemsListingFragment } from "@/gql/graphql";
 import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
 import { useState } from "react";
 import isEmpty from "lodash/isEmpty";
-import { useFragment } from "@/gql";
 import { isNil } from "lodash";
 import { DEFAULT_PAGINATION_STATE } from "../pagination/types";
 import { ItemQuantityAdjustmentDescription } from "./types";
@@ -82,17 +81,12 @@ export default function useInventoryManagement() {
     TraitListingQueryDocument
   );
 
-  const traitFragmentData = useFragment(
-    TraitListingFragment,
-    traitListingData.items.getTraits
-  );
+  const traitFragmentData = traitListingData.items.getTraits;
 
   const inventoryFragmentData = inventoryListingData.inventory.getInventories.entities;
 
-  const inventoryAndItemsFragmentData = useFragment(
-    InventoryWithItemsListingFragment,
-    inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsById
-  );
+  const inventoryAndItemsFragmentData = 
+    inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsById;
 
   const inventoryItemsPaginationState = isNil(
     inventoryAndItemsFragmentData?.items
@@ -105,7 +99,6 @@ export default function useInventoryManagement() {
         totalPages: inventoryAndItemsFragmentData.items.totalPages,
       };
 
-  // Use the unwrapped fragment data directly since it's already been processed by useFragment above
   const inventoryItems = inventoryAndItemsFragmentData?.items?.entities ?? [];
 
   const { data: itemOptionsData, refetch: refetchItemOptions } =

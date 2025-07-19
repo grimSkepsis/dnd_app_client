@@ -1,10 +1,27 @@
 // lib/client.js
 import { HttpLink } from "@apollo/client";
 import { registerApolloClient, ApolloClient, InMemoryCache } from "@apollo/client-integration-nextjs";
+import { createFragmentRegistry } from "@apollo/client/cache";
+import {
+  ItemListingFragmentDoc,
+  ItemDetailsFragmentDoc,
+  InventoryItemListingFragmentDoc,
+  InventoryWithItemsListingFragmentDoc,
+  TraitListingFragmentDoc,
+} from "@/gql/graphql";
+
+const fragmentRegistry = createFragmentRegistry(
+  ItemListingFragmentDoc,
+  ItemDetailsFragmentDoc,
+  InventoryItemListingFragmentDoc,
+  InventoryWithItemsListingFragmentDoc,
+  TraitListingFragmentDoc,
+);
 
 export const { getClient } = registerApolloClient(() => {
   return new ApolloClient({
     cache: new InMemoryCache({
+      fragments: fragmentRegistry,
       typePolicies: {
         Query: {
           fields: {

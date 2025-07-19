@@ -1,12 +1,28 @@
 "use client";
 
 import { ApolloLink, HttpLink } from "@apollo/client";
+import { createFragmentRegistry } from "@apollo/client/cache";
 import {
   ApolloNextAppProvider,
   ApolloClient,
   InMemoryCache,
   SSRMultipartLink,
 } from "@apollo/client-integration-nextjs";
+import {
+  ItemListingFragmentDoc,
+  ItemDetailsFragmentDoc,
+  InventoryItemListingFragmentDoc,
+  InventoryWithItemsListingFragmentDoc,
+  TraitListingFragmentDoc,
+} from "@/gql/graphql";
+
+const fragmentRegistry = createFragmentRegistry(
+  ItemListingFragmentDoc,
+  ItemDetailsFragmentDoc,
+  InventoryItemListingFragmentDoc,
+  InventoryWithItemsListingFragmentDoc,
+  TraitListingFragmentDoc,
+);
 
 function makeClient() {
   const httpLink = new HttpLink({
@@ -15,6 +31,7 @@ function makeClient() {
 
   return new ApolloClient({
     cache: new InMemoryCache({
+      fragments: fragmentRegistry,
       typePolicies: {
         Query: {
           fields: {

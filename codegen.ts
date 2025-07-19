@@ -10,9 +10,11 @@ const config: CodegenConfig = {
   generates: {
     "./src/gql/": {
       preset: "client",
-      plugins: [], // Ensure this is defined even if empty
       config: {
         maybeValue: "T | undefined",
+      },
+      presetConfig: {
+        fragmentMasking: false,
       },
     },
   },

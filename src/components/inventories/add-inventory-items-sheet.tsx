@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { FragmentType, useFragment } from "@/gql";
 import { ItemListingFragment, ItemsListingQuery } from "@/gql/graphql";
 import { useState } from "react";
 import isNil from "lodash/isNil";
@@ -24,7 +23,7 @@ import {
 } from "@/hooks/inventories/types";
 
 type InventoryItemOptionProps = {
-  data: FragmentType<typeof ItemListingFragmentDocument>;
+  data: ItemListingFragment;
   onClick: (item: ItemListingFragment) => void;
   isInTransationList?: boolean;
 };
@@ -34,7 +33,7 @@ function InventoryItemOption({
   onClick,
   isInTransationList,
 }: InventoryItemOptionProps) {
-  const item = useFragment(ItemListingFragmentDocument, data);
+  const item = data;
   return (
     <div
       className={[

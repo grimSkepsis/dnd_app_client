@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/sheet";
 import { ItemDetailsQuery } from "@/gql/graphql";
 import { ItemDetailsFragmentDocument } from "@/hooks/inventories/graphql";
-import { useFragment } from "@/gql";
 import isNil from "lodash/isNil";
 import { DialogProps } from "@radix-ui/react-dialog";
 
@@ -34,10 +33,7 @@ export default function ItemDetailsSheet({
   ...dialogProps
 }: ItemDetailsSheetProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const data = useFragment(
-    ItemDetailsFragmentDocument,
-    rawData?.items?.getItem,
-  );
+  const data = rawData?.items?.getItem;
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement | undefined>(undefined);

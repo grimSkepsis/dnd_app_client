@@ -1,18 +1,16 @@
 "use client";
 
-import { FragmentType, useFragment } from "@/gql";
 import { Column, ColumnDef, SortDirection } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { isNil } from "lodash";
-import { InventoryItemListingFragment } from "@/gql/graphql";
-import { InventoryItemListingFragmentDocument } from "@/hooks/inventories/graphql";
+import { InventoryItem } from "@/gql/graphql";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Tag } from "@/components/ui/tag";
 
 type HeaderRendererProps = {
-  column: Column<FragmentType<typeof InventoryItemListingFragmentDocument>>;
+  column: Column<InventoryItem>;
   title: string;
   sorterOverride?: string;
 };
@@ -56,22 +54,11 @@ function calcSortState(sortDir: SortDirection | false) {
   }
 }
 
-// Helper component to unwrap fragment data in cells
-function InventoryItemCell({
-  fragmentData,
-  children,
-}: {
-  fragmentData: FragmentType<typeof InventoryItemListingFragmentDocument>;
-  children: (data: InventoryItemListingFragment) => React.ReactNode;
-}) {
-  const data = useFragment(InventoryItemListingFragmentDocument, fragmentData);
-  return <>{children(data)}</>;
-}
 
 export function getInventoryColumns(
   onUseItem: (itemId: string) => Promise<void>,
   onSellItem: (itemId: string) => Promise<void>
-): ColumnDef<FragmentType<typeof InventoryItemListingFragmentDocument>>[] {
+): ColumnDef<InventoryItem>[] {
   return [
     {
       accessorKey: "name",
@@ -85,22 +72,14 @@ export function getInventoryColumns(
       accessorKey: "bulk",
       header: ({ column }) => <HeaderRenderer title="Bulk" column={column} />,
       cell: ({ row }) => {
-        return (
-          <InventoryItemCell fragmentData={row.original}>
-            {(data) => <div>{data.displayBulk ?? "???"}</div>}
-          </InventoryItemCell>
-        );
+        return <div>{row.original.displayBulk ?? "???"}</div>;
       },
     },
     {
       accessorKey: "value",
       header: ({ column }) => <HeaderRenderer title="Value" column={column} />,
       cell: ({ row }) => {
-        return (
-          <InventoryItemCell fragmentData={row.original}>
-            {(data) => <div>{data.displayValue ?? "???"}</div>}
-          </InventoryItemCell>
-        );
+        return <div>{row.original.displayValue ?? "???"}</div>;
       },
     },
     {
@@ -113,22 +92,19 @@ export function getInventoryColumns(
       accessorKey: "traits",
       header: "Traits",
       cell: ({ row }) => {
+        const { traits } = row.original;
         return (
-          <InventoryItemCell fragmentData={row.original}>
-            {(data) => (
-              <div>
-                {data.traits?.length ? (
-                  <div className="flex flex-wrap gap-2">
-                    {data.traits.map((t) => (
-                      <Tag key={t} label={t} />
-                    ))}
-                  </div>
-                ) : (
-                  "???"
-                )}
+          <div>
+            {traits?.length ? (
+              <div className="flex flex-wrap gap-2">
+                {traits.map((t) => (
+                  <Tag key={t} label={t} />
+                ))}
               </div>
+            ) : (
+              "???"
             )}
-          </InventoryItemCell>
+          </div>
         );
       },
     },
@@ -136,15 +112,11 @@ export function getInventoryColumns(
       id: "actions",
       cell: ({ row }) => {
         return (
-          <InventoryItemCell fragmentData={row.original}>
-            {(data) => (
-              <InventoryItemActionRenderer
-                item={data}
-                onUseItem={onUseItem}
-                onSellItem={onSellItem}
-              />
-            )}
-          </InventoryItemCell>
+          <InventoryItemActionRenderer
+            item={row.original}
+            onUseItem={onUseItem}
+            onSellItem={onSellItem}
+          />
         );
       },
     },
@@ -152,9 +124,8 @@ export function getInventoryColumns(
 }
 
 type InventoryItemActionRendererProps = {
-  item: InventoryItemListingFragment;
+  item: InventoryItem;
   onUseItem: (itemId: string) => Promise<void>;
-
   onSellItem: (itemId: string) => Promise<void>;
 };
 function InventoryItemActionRenderer({
