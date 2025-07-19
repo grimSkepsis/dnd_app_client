@@ -1,8 +1,6 @@
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -16,7 +14,6 @@ import isEmpty from "lodash/isEmpty";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { ItemListingFragmentDocument } from "@/hooks/inventories/graphql";
 import {
   InventoryItemAdjustmentCallback,
   ItemQuantityAdjustmentDescription,

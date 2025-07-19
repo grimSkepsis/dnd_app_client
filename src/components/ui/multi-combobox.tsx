@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -18,7 +17,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Input } from "./input";
 import { Option } from "@/types/form";
 import isEmpty from "lodash/isEmpty";
 import { Tag } from "./tag";

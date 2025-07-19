@@ -4,13 +4,13 @@ import { Column, ColumnDef, SortDirection } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { isNil } from "lodash";
-import { InventoryItem } from "@/gql/graphql";
+import { InventoryItemListingFragment } from "@/gql/graphql";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Tag } from "@/components/ui/tag";
 
 type HeaderRendererProps = {
-  column: Column<InventoryItem>;
+  column: Column<InventoryItemListingFragment>;
   title: string;
   sorterOverride?: string;
 };
@@ -58,7 +58,7 @@ function calcSortState(sortDir: SortDirection | false) {
 export function getInventoryColumns(
   onUseItem: (itemId: string) => Promise<void>,
   onSellItem: (itemId: string) => Promise<void>
-): ColumnDef<InventoryItem>[] {
+): ColumnDef<InventoryItemListingFragment>[] {
   return [
     {
       accessorKey: "name",
@@ -124,7 +124,7 @@ export function getInventoryColumns(
 }
 
 type InventoryItemActionRendererProps = {
-  item: InventoryItem;
+  item: InventoryItemListingFragment;
   onUseItem: (itemId: string) => Promise<void>;
   onSellItem: (itemId: string) => Promise<void>;
 };

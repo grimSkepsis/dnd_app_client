@@ -7,7 +7,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ItemDetailsQuery } from "@/gql/graphql";
-import { ItemDetailsFragmentDocument } from "@/hooks/inventories/graphql";
 import isNil from "lodash/isNil";
 import { DialogProps } from "@radix-ui/react-dialog";
 

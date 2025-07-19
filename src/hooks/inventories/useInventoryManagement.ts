@@ -9,9 +9,7 @@ import {
   UpdateInventoryCurrencyMutationDocument,
   InventoryListingQueryDocument,
   TraitListingQueryDocument,
-  TraitListingFragment,
 } from "./graphql";
-import type { InventoryWithItemsListingFragment } from "@/gql/graphql";
 import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
 import { useState } from "react";

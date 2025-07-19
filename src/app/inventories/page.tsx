@@ -2,7 +2,7 @@
 import { getInventoryColumns } from "./columns";
 import { PaginationState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import AddInventoryItemsSheet from "@/components/inventories/add-inventory-items-sheet";
 import { Button } from "@/components/ui/button";
 import useInventoryManagement from "@/hooks/inventories/useInventoryManagement";
@@ -10,7 +10,6 @@ import partial from "lodash/partial";
 import ItemDetailsSheet from "@/components/inventories/item-details/item-details-sheet";
 import { InventoryCurrency } from "@/components/inventories/currency/inventory-currency";
 import { InventorySelector } from "@/components/inventories/inventory-selector/inventorySelector";
-import { InventoryItem } from "@/gql/graphql";
 
 export default function Page() {
   const [isAddItemsOpen, setIsAddItemsOpen] = useState(false);

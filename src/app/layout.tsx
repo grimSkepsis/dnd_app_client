@@ -4,7 +4,6 @@ import { ApolloWrapper } from "@/lib/apollo-provider";
 import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
-import { ModeToggle } from "@/components/theme-toggle";
 import { PageHeader } from "@/components/page-header";
 import { Toaster } from "@/components/ui/sonner";
 const fontSans = FontSans({
