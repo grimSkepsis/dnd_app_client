@@ -21,29 +21,6 @@ import { Option } from "@/types/form";
 import isEmpty from "lodash/isEmpty";
 import { Tag } from "./tag";
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
-
 type MultiComboBoxProps = {
   options: Option[];
   defaultValues: string[];

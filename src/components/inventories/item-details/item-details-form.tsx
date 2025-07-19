@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ItemDetailsFragment } from "@/gql/graphql";
 import { Option } from "@/types/form";
-import { MutableRefObject, useEffect } from "react";
+import { useEffect } from "react";
 import { MultiComboBox } from "@/components/ui/multi-combobox";
 import isNil from "lodash/isNil";
 import {
@@ -34,7 +34,6 @@ import {
 type ItemDetailsFormProps = {
   data?: ItemDetailsFragment | null;
   traitOptions: Option[];
-  parentRef?: MutableRefObject<HTMLDivElement | undefined>;
   onSubmit: (data: ItemFormProperties) => Promise<void>;
   onCancel?: () => void;
 };
@@ -42,7 +41,6 @@ type ItemDetailsFormProps = {
 export function ItemDetailsForm({
   data,
   traitOptions,
-  parentRef,
   onCancel,
   onSubmit: handleSubmit,
 }: ItemDetailsFormProps) {

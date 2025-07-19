@@ -130,7 +130,8 @@ export default function AddInventoryItemsSheet({
       toast(`Items added ${calcTransationString()}`);
       setItemsToAdd({});
       onOpenChange(false);
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       toast(`There was an error adding your items`);
     }
   }
@@ -144,7 +145,8 @@ export default function AddInventoryItemsSheet({
     try {
       await handleCreateItem(newItemName);
       toast(`Item created successfully!`);
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       toast(`There was an error creating the item`);
     }
     setNewItemName("");

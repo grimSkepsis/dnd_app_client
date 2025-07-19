@@ -42,7 +42,6 @@ export default function useInventoryManagement() {
     {
       loading: itemDetailsLoading,
       data: itemDetailsData,
-      error: itemDetailsError,
       refetch: refetchItemDetails,
     },
   ] = useLazyQuery(ItemDetailsQueryDocument);
@@ -51,8 +50,9 @@ export default function useInventoryManagement() {
     UpdateInventoryCurrencyMutationDocument
   );
 
-  const { data: inventoryListingData, refetch: refetchInventoryListing } =
-    useSuspenseQuery(InventoryListingQueryDocument);
+  const { data: inventoryListingData } = useSuspenseQuery(
+    InventoryListingQueryDocument
+  );
 
   const { data: inventoryAndItemsData, refetch: refetchInventoryAndItemsData } =
     useSuspenseQuery(InventoryWithItemsListingQueryDocument, {
@@ -81,9 +81,10 @@ export default function useInventoryManagement() {
 
   const traitFragmentData = traitListingData.items.getTraits;
 
-  const inventoryFragmentData = inventoryListingData.inventory.getInventories.entities;
+  const inventoryFragmentData =
+    inventoryListingData.inventory.getInventories.entities;
 
-  const inventoryAndItemsFragmentData = 
+  const inventoryAndItemsFragmentData =
     inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsById;
 
   const inventoryItemsPaginationState = isNil(
@@ -230,7 +231,14 @@ export default function useInventoryManagement() {
     name: inventoryName,
     uuid: inventoryId,
     ...currency
-  } = inventoryAndItemsFragmentData?.inventory ?? { name: "", uuid: "", pp: 0, gp: 0, sp: 0, cp: 0 };
+  } = inventoryAndItemsFragmentData?.inventory ?? {
+    name: "",
+    uuid: "",
+    pp: 0,
+    gp: 0,
+    sp: 0,
+    cp: 0,
+  };
 
   return {
     inventoryItemsSorting,
