@@ -2,7 +2,7 @@
 import { getInventoryColumns } from "./columns";
 import { PaginationState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import AddInventoryItemsSheet from "@/components/inventories/add-inventory-items-sheet";
 import { Button } from "@/components/ui/button";
 import useInventoryManagement from "@/hooks/inventories/useInventoryManagement";
@@ -10,6 +10,9 @@ import partial from "lodash/partial";
 import ItemDetailsSheet from "@/components/inventories/item-details/item-details-sheet";
 import { InventoryCurrency } from "@/components/inventories/currency/inventory-currency";
 import { InventorySelector } from "@/components/inventories/inventory-selector/inventorySelector";
+import { FragmentType, useFragment } from "@/gql";
+import { InventoryItemListingFragmentDocument } from "@/hooks/inventories/graphql";
+import { InventoryItemListingFragment } from "@/gql/graphql";
 
 export default function Page() {
   const [isAddItemsOpen, setIsAddItemsOpen] = useState(false);
@@ -67,6 +70,34 @@ export default function Page() {
     handleViewItemDetails(itemId);
   }
 
+  function handleRowClick(itemId: string) {
+    void onViewItemDetails(itemId);
+  }
+
+  // Wrapper component to handle fragment unwrapping for row clicks
+  function InventoryDataTable() {
+    return (
+      <DataTable
+        columns={getInventoryColumns(
+          partial(onUseItem, inventoryId),
+          partial(onSellItem, inventoryId)
+        )}
+        data={inventoryItems}
+        onRowClick={(row) => {
+          const itemData = useFragment(InventoryItemListingFragmentDocument, row);
+          handleRowClick(itemData.uuid);
+        }}
+        sortingState={inventoryItemsSorting}
+        onPaginationChange={onPaginationChange}
+        onSortingChange={onInventoryItemsSortChange}
+        paginationState={inventoryItemsPaginationState}
+        onNextPage={onNextPage}
+        onPreviousPage={onPreviousPage}
+        onPageSelection={onPageSelection}
+      />
+    );
+  }
+
   return (
     <main>
       <div className="container mx-auto py-10">
@@ -107,27 +138,7 @@ export default function Page() {
           traitOptions={traitOptions}
           onSubmitUpdate={onUpdateItem}
         />
-        <DataTable
-          columns={getInventoryColumns(
-            partial(onUseItem, inventoryId),
-            partial(onSellItem, inventoryId)
-          )}
-          data={inventoryItems}
-          // TODO - fix type safety
-          onRowClick={(row) => {
-            // Log the structure to debug
-            console.log('Row structure:', row);
-            console.log('Row keys:', Object.keys(row));
-            void onViewItemDetails((row as any).uuid);
-          }}
-          sortingState={inventoryItemsSorting}
-          onPaginationChange={onPaginationChange}
-          onSortingChange={onInventoryItemsSortChange}
-          paginationState={inventoryItemsPaginationState}
-          onNextPage={onNextPage}
-          onPreviousPage={onPreviousPage}
-          onPageSelection={onPageSelection}
-        />
+        <InventoryDataTable />
       </div>
     </main>
   );

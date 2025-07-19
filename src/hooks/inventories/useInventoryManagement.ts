@@ -105,6 +105,7 @@ export default function useInventoryManagement() {
         totalPages: inventoryAndItemsFragmentData.items.totalPages,
       };
 
+  // Use the unwrapped fragment data directly since it's already been processed by useFragment above
   const inventoryItems = inventoryAndItemsFragmentData?.items?.entities ?? [];
 
   const { data: itemOptionsData, refetch: refetchItemOptions } =

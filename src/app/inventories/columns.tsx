@@ -1,7 +1,6 @@
 "use client";
 
 import { FragmentType, useFragment } from "@/gql";
-import {} from "@/models/inventory-items/type";
 import { Column, ColumnDef, SortDirection } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
@@ -12,18 +11,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Tag } from "@/components/ui/tag";
 
-type CellRendererProps<T> = {
-  rowData: FragmentType<typeof InventoryItemListingFragmentDocument>;
-  getDisplayValue: (data: T) => string | number | React.JSX.Element;
-};
-
-function CellRenderer<T>({ rowData, getDisplayValue }: CellRendererProps<T>) {
-  const data = useFragment(InventoryItemListingFragmentDocument, rowData);
-  return <div>{getDisplayValue(data as T)}</div>;
-}
-
 type HeaderRendererProps = {
-  column: Column<any>;
+  column: Column<FragmentType<typeof InventoryItemListingFragmentDocument>>;
   title: string;
   sorterOverride?: string;
 };
@@ -67,9 +56,21 @@ function calcSortState(sortDir: SortDirection | false) {
   }
 }
 
+// Helper component to unwrap fragment data in cells
+function InventoryItemCell({
+  fragmentData,
+  children,
+}: {
+  fragmentData: FragmentType<typeof InventoryItemListingFragmentDocument>;
+  children: (data: InventoryItemListingFragment) => React.ReactNode;
+}) {
+  const data = useFragment(InventoryItemListingFragmentDocument, fragmentData);
+  return <>{children(data)}</>;
+}
+
 export function getInventoryColumns(
   onUseItem: (itemId: string) => Promise<void>,
-  onSellItem: (itemId: string) => Promise<void>,
+  onSellItem: (itemId: string) => Promise<void>
 ): ColumnDef<FragmentType<typeof InventoryItemListingFragmentDocument>>[] {
   return [
     {
@@ -83,24 +84,22 @@ export function getInventoryColumns(
     {
       accessorKey: "bulk",
       header: ({ column }) => <HeaderRenderer title="Bulk" column={column} />,
-      cell: (props) => {
+      cell: ({ row }) => {
         return (
-          <CellRenderer<InventoryItemListingFragment>
-            rowData={props.row.original}
-            getDisplayValue={(data) => data.displayBulk ?? "???"}
-          />
+          <InventoryItemCell fragmentData={row.original}>
+            {(data) => <div>{data.displayBulk ?? "???"}</div>}
+          </InventoryItemCell>
         );
       },
     },
     {
       accessorKey: "value",
       header: ({ column }) => <HeaderRenderer title="Value" column={column} />,
-      cell: (props) => {
+      cell: ({ row }) => {
         return (
-          <CellRenderer<InventoryItemListingFragment>
-            rowData={props.row.original}
-            getDisplayValue={(data) => data.displayValue ?? "???"}
-          />
+          <InventoryItemCell fragmentData={row.original}>
+            {(data) => <div>{data.displayValue ?? "???"}</div>}
+          </InventoryItemCell>
         );
       },
     },
@@ -113,35 +112,39 @@ export function getInventoryColumns(
     {
       accessorKey: "traits",
       header: "Traits",
-      cell: (props) => {
+      cell: ({ row }) => {
         return (
-          <CellRenderer<InventoryItemListingFragment>
-            rowData={props.row.original}
-            getDisplayValue={(data) =>
-              data.traits?.length ? (
-                <div className="flex flex-wrap gap-2">
-                  {data.traits.map((t) => <Tag key={t} label={t} />)}
-                </div>
-              ) : "???"
-            }
-          />
+          <InventoryItemCell fragmentData={row.original}>
+            {(data) => (
+              <div>
+                {data.traits?.length ? (
+                  <div className="flex flex-wrap gap-2">
+                    {data.traits.map((t) => (
+                      <Tag key={t} label={t} />
+                    ))}
+                  </div>
+                ) : (
+                  "???"
+                )}
+              </div>
+            )}
+          </InventoryItemCell>
         );
       },
     },
     {
       id: "actions",
-      cell: (props) => {
+      cell: ({ row }) => {
         return (
-          <CellRenderer<InventoryItemListingFragment>
-            rowData={props.row.original}
-            getDisplayValue={(item) => (
+          <InventoryItemCell fragmentData={row.original}>
+            {(data) => (
               <InventoryItemActionRenderer
-                item={item}
+                item={data}
                 onUseItem={onUseItem}
                 onSellItem={onSellItem}
               />
             )}
-          />
+          </InventoryItemCell>
         );
       },
     },
@@ -171,7 +174,7 @@ function InventoryItemActionRenderer({
     } catch (e) {
       console.error(e);
       toast.error(
-        `There as an issue using ${name}. Please refresh and try again.`,
+        `There was an issue using ${name}. Please refresh and try again.`
       );
     }
     setIsUsing(false);
@@ -186,7 +189,7 @@ function InventoryItemActionRenderer({
     } catch (e) {
       console.error(e);
       toast.error(
-        `There as an issue selling ${name}. Please refresh and try again.`,
+        `There was an issue selling ${name}. Please refresh and try again.`
       );
     }
     setIsUsing(false);
