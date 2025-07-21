@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import {
@@ -13,19 +14,29 @@ import {
 } from "@/components/ui/navigation-menu";
 
 export function MainNav() {
+  const pathname = usePathname();
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href="/" className={navigationMenuTriggerStyle()}>
+            <Link
+              href="/"
+              className={navigationMenuTriggerStyle()}
+              data-active={pathname === "/" ? "" : undefined}
+            >
               Home
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link href="/inventories" className={navigationMenuTriggerStyle()}>
+            <Link
+              href="/inventories"
+              className={navigationMenuTriggerStyle()}
+              data-active={pathname === "/inventories" ? "" : undefined}
+            >
               Inventories
             </Link>
           </NavigationMenuLink>
