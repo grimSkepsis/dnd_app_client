@@ -21,6 +21,9 @@ import { InventoryItemQuantityAdjustmentParams } from "@/gql/graphql";
 import { ItemFormProperties } from "@/components/inventories/item-details/types";
 import { CurrencyData } from "@/components/inventories/currency/types";
 
+const DEFAULT_PAGE_SIZE = 5;
+const DEFAULT_INVENTORY_ID = "1812136d-427b-46cb-82b3-d8309b7f4607";
+
 export default function useInventoryManagement() {
   const DEFAULT_SORTING_STATE: SortingState = [{ id: "name", desc: false }];
   const [inventoryItemsSorting, setInventoryItemsSorting] = useState(
@@ -63,9 +66,9 @@ export default function useInventoryManagement() {
     useSuspenseQuery(InventoryWithItemsListingQueryDocument, {
       variables: {
         //TODO - get session and default inventory working (or empty state?)
-        id: "1812136d-427b-46cb-82b3-d8309b7f4607",
+        id: DEFAULT_INVENTORY_ID,
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: DEFAULT_PAGE_SIZE,
         orderBy: DEFAULT_SORTING_STATE[0].id,
         orderDirection: DEFAULT_SORTING_STATE[0].desc ? "DESC" : "ASC",
         filter: {
@@ -113,12 +116,10 @@ export default function useInventoryManagement() {
     useSuspenseQuery(ItemsListingQueryDocument, {
       variables: {
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: 20,
         orderBy: DEFAULT_SORTING_STATE[0].id,
         orderDirection: DEFAULT_SORTING_STATE[0].desc ? "DESC" : "ASC",
-        filter: {
-          // excludedTraits: ["Toolkit"],
-        },
+        filter: {},
       },
       fetchPolicy: "no-cache",
       context: {
