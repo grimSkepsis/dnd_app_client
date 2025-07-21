@@ -1,20 +1,52 @@
 "use client";
 
-import { ApolloClient, ApolloLink, HttpLink } from "@apollo/client";
+import { ApolloLink, HttpLink } from "@apollo/client";
+import { createFragmentRegistry } from "@apollo/client/cache";
 import {
   ApolloNextAppProvider,
-  NextSSRApolloClient,
-  NextSSRInMemoryCache,
+  ApolloClient,
+  InMemoryCache,
   SSRMultipartLink,
-} from "@apollo/experimental-nextjs-app-support/ssr";
+} from "@apollo/client-integration-nextjs";
+import {
+  ItemListingFragmentDoc,
+  ItemDetailsFragmentDoc,
+  InventoryItemListingFragmentDoc,
+  InventoryWithItemsListingFragmentDoc,
+  TraitListingFragmentDoc,
+} from "@/gql/graphql";
+
+const fragmentRegistry = createFragmentRegistry(
+  ItemListingFragmentDoc,
+  ItemDetailsFragmentDoc,
+  InventoryItemListingFragmentDoc,
+  InventoryWithItemsListingFragmentDoc,
+  TraitListingFragmentDoc,
+);
 
 function makeClient() {
   const httpLink = new HttpLink({
     uri: "http://localhost:3002/graphql",
   });
 
-  return new NextSSRApolloClient({
-    cache: new NextSSRInMemoryCache(),
+  return new ApolloClient({
+    cache: new InMemoryCache({
+      fragments: fragmentRegistry,
+      typePolicies: {
+        Query: {
+          fields: {
+            items: {
+              // Allow different ItemQuery objects to coexist
+              merge: false,
+            },
+          },
+        },
+        ItemQuery: {
+          // Don't cache ItemQuery objects since they don't have stable IDs
+          keyFields: false,
+        },
+      },
+    }),
     link:
       typeof window === "undefined"
         ? ApolloLink.from([

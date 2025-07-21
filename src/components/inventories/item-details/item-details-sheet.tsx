@@ -7,8 +7,6 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ItemDetailsQuery } from "@/gql/graphql";
-import { ItemDetailsFragmentDocument } from "@/hooks/inventories/graphql";
-import { useFragment } from "@/gql";
 import isNil from "lodash/isNil";
 import { DialogProps } from "@radix-ui/react-dialog";
 
@@ -34,12 +32,9 @@ export default function ItemDetailsSheet({
   ...dialogProps
 }: ItemDetailsSheetProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const data = useFragment(
-    ItemDetailsFragmentDocument,
-    rawData?.items?.getItem,
-  );
+  const data = rawData?.items?.getItem;
 
-  const dialogRef = useRef<HTMLDivElement>();
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   function onOpenChange(isOpen: boolean) {
     handleOpenChange?.(isOpen);
@@ -64,7 +59,7 @@ export default function ItemDetailsSheet({
                 <SheetTitle>
                   {data.name}{" "}
                   <button
-                    onClick={(e) => {
+                    onClick={() => {
                       setIsEditing(true);
                     }}
                     className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
@@ -82,7 +77,9 @@ export default function ItemDetailsSheet({
                     </SheetDescription>
 
                     <div className="flex flex-wrap gap-2">
-                      {data?.traits?.map((t) => <Tag key={t} label={t} />)}
+                      {data?.traits?.map((t) => (
+                        <Tag key={t} label={t} />
+                      ))}
                     </div>
                   </div>
                   <SheetDescription>
@@ -103,7 +100,6 @@ export default function ItemDetailsSheet({
                 <ItemDetailsForm
                   data={data}
                   traitOptions={traitOptions}
-                  parentRef={dialogRef}
                   onCancel={() => setIsEditing(false)}
                   onSubmit={onSubmit}
                 />

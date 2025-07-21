@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -18,41 +17,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Input } from "./input";
 import { Option } from "@/types/form";
 import isEmpty from "lodash/isEmpty";
 import { Tag } from "./tag";
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
 
 type MultiComboBoxProps = {
   options: Option[];
   defaultValues: string[];
   onChange: (values: string[]) => void;
-  // onAdd: (value: string) => void;
-  // onRemove: (value: string) => void;
-  container?: Element;
   placeholder?: string;
   onCreateOption?: (value: string) => Promise<Option>;
 };
@@ -63,11 +35,11 @@ const DEAULT_CREATE_OPTION = async (label: string) => ({
 });
 
 export function MultiComboBox({
-  container,
   defaultValues,
   options: defaultOptions,
   placeholder,
   onCreateOption = DEAULT_CREATE_OPTION,
+  onChange,
 }: MultiComboBoxProps) {
   const [open, setOpen] = React.useState(false);
   const [values, setValues] = React.useState(defaultValues);
@@ -86,6 +58,11 @@ export function MultiComboBox({
     return map;
   }, [options]);
 
+  function onValueChange(values: string[]) {
+    setValues(values);
+    onChange(values);
+  }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -98,13 +75,13 @@ export function MultiComboBox({
                   key={v}
                   onRemove={(e) => {
                     e.stopPropagation();
-                    setValues(values.filter((value) => value !== v));
+                    onValueChange(values.filter((value) => value !== v));
                   }}
                 />
               ))}
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" container={container}>
+      <PopoverContent className="w-[200px] p-0">
         <Command>
           <CommandInput
             placeholder="Search traits..."
@@ -118,13 +95,11 @@ export function MultiComboBox({
                   onCreateOption(newItem).then((newOption) => {
                     setOptions((currentOptions) =>
                       [...currentOptions, newOption].sort((a, b) =>
-                        a.label.localeCompare(b.label),
-                      ),
+                        a.label.localeCompare(b.label)
+                      )
                     );
-                    setValues((currentValues) => [
-                      ...currentValues,
-                      newOption.value,
-                    ]);
+                    onValueChange([...values, newOption.value]);
+
                     setNewItem("");
                   });
                 }}
@@ -141,12 +116,10 @@ export function MultiComboBox({
                   key={option.value}
                   value={option.value}
                   onSelect={(currentValue) => {
-                    setValues((currentValues) =>
-                      currentValues.includes(currentValue)
-                        ? currentValues.filter(
-                            (value) => value !== currentValue,
-                          )
-                        : [...currentValues, currentValue],
+                    onValueChange(
+                      values.includes(currentValue)
+                        ? values.filter((value) => value !== currentValue)
+                        : [...values, currentValue]
                     );
                   }}
                 >
@@ -155,7 +128,7 @@ export function MultiComboBox({
                       "mr-2 h-4 w-4",
                       values?.includes(option.value)
                         ? "opacity-100"
-                        : "opacity-0",
+                        : "opacity-0"
                     )}
                   />
                   {option.label}

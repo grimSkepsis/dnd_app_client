@@ -4,7 +4,6 @@ import { ApolloWrapper } from "@/lib/apollo-provider";
 import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
-import { ModeToggle } from "@/components/theme-toggle";
 import { PageHeader } from "@/components/page-header";
 import { Toaster } from "@/components/ui/sonner";
 const fontSans = FontSans({
@@ -23,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",

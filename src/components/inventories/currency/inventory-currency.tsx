@@ -3,13 +3,14 @@ import {
   CurrencyData,
   CurrencyFormProperties,
   CurrencyFormSchema,
+  convertCurrencyFormToData,
 } from "./types";
 import { Pencil, X } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { FieldErrors, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormField } from "@/components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 import { toast } from "sonner";
 
 type InventoryCurrencyProps = {
@@ -38,7 +39,7 @@ export function InventoryCurrency({
 
   async function onSubmit(data: CurrencyFormProperties) {
     try {
-      await onUpdate(data);
+      await onUpdate(convertCurrencyFormToData(data));
       setIsEditing(false);
       toast.success("Currency updated");
     } catch (error) {
@@ -47,67 +48,72 @@ export function InventoryCurrency({
     }
   }
 
+  async function onInvalidSubmit(error: FieldErrors<CurrencyFormProperties>) {
+    console.log("onInvalidSubmit", error);
+  }
+
   return (
     <div className="flex gap-3">
-      <form
-        {...form}
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex gap-3"
-      >
-        <div className="flex gap-3 flex-col">
-          <p>Platinum: {pp}</p>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, onInvalidSubmit)}
+          className="flex gap-3"
+        >
+          <div className="flex gap-3 flex-col">
+            <p>Platinum: {pp}</p>
+            {isEditing && (
+              <FormField
+                control={form.control}
+                name="pp"
+                render={({ field }) => (
+                  <Input className="w-20" type="number" {...field} />
+                )}
+              />
+            )}
+          </div>
+          <div className="flex gap-3 flex-col">
+            <p>Gold: {gp}</p>
+            {isEditing && (
+              <FormField
+                control={form.control}
+                name="gp"
+                render={({ field }) => (
+                  <Input className="w-20" type="number" {...field} />
+                )}
+              />
+            )}
+          </div>
+          <div className="flex gap-3 flex-col">
+            <p>Silver: {sp}</p>
+            {isEditing && (
+              <FormField
+                control={form.control}
+                name="sp"
+                render={({ field }) => (
+                  <Input className="w-20" type="number" {...field} />
+                )}
+              />
+            )}
+          </div>
+          <div className="flex gap-3 flex-col">
+            <p>Copper: {cp}</p>
+            {isEditing && (
+              <FormField
+                control={form.control}
+                name="cp"
+                render={({ field }) => (
+                  <Input className="w-20" type="number" {...field} />
+                )}
+              />
+            )}
+          </div>
           {isEditing && (
-            <FormField
-              control={form.control}
-              name="pp"
-              render={({ field }) => (
-                <Input className="w-20" type="number" {...field} />
-              )}
-            />
+            <Button size="sm" type="submit">
+              Save
+            </Button>
           )}
-        </div>
-        <div className="flex gap-3 flex-col">
-          <p>Gold: {gp}</p>
-          {isEditing && (
-            <FormField
-              control={form.control}
-              name="gp"
-              render={({ field }) => (
-                <Input className="w-20" type="number" {...field} />
-              )}
-            />
-          )}
-        </div>
-        <div className="flex gap-3 flex-col">
-          <p>Silver: {sp}</p>
-          {isEditing && (
-            <FormField
-              control={form.control}
-              name="sp"
-              render={({ field }) => (
-                <Input className="w-20" type="number" {...field} />
-              )}
-            />
-          )}
-        </div>
-        <div className="flex gap-3 flex-col">
-          <p>Copper: {cp}</p>
-          {isEditing && (
-            <FormField
-              control={form.control}
-              name="cp"
-              render={({ field }) => (
-                <Input className="w-20" type="number" {...field} />
-              )}
-            />
-          )}
-        </div>
-        {isEditing && (
-          <Button type="submit" size="sm">
-            Save
-          </Button>
-        )}
-      </form>
+        </form>
+      </Form>
       <button
         onClick={onToggleEdit}
         className="rounded-sm h-fit opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"

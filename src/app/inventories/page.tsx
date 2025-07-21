@@ -1,4 +1,6 @@
 "use client";
+
+export const dynamic = "force-dynamic";
 import { getInventoryColumns } from "./columns";
 import { PaginationState, Updater } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
@@ -67,6 +69,33 @@ export default function Page() {
     handleViewItemDetails(itemId);
   }
 
+  function handleRowClick(itemId: string) {
+    void onViewItemDetails(itemId);
+  }
+
+  // Wrapper component to handle fragment unwrapping for row clicks
+  function InventoryDataTable() {
+    return (
+      <DataTable
+        columns={getInventoryColumns(
+          partial(onUseItem, inventoryId),
+          partial(onSellItem, inventoryId)
+        )}
+        data={inventoryItems}
+        onRowClick={(row) => {
+          handleRowClick(row.uuid);
+        }}
+        sortingState={inventoryItemsSorting}
+        onPaginationChange={onPaginationChange}
+        onSortingChange={onInventoryItemsSortChange}
+        paginationState={inventoryItemsPaginationState}
+        onNextPage={onNextPage}
+        onPreviousPage={onPreviousPage}
+        onPageSelection={onPageSelection}
+      />
+    );
+  }
+
   return (
     <main>
       <div className="container mx-auto py-10">
@@ -107,22 +136,7 @@ export default function Page() {
           traitOptions={traitOptions}
           onSubmitUpdate={onUpdateItem}
         />
-        <DataTable
-          columns={getInventoryColumns(
-            partial(onUseItem, inventoryId),
-            partial(onSellItem, inventoryId)
-          )}
-          data={inventoryItems}
-          // TODO - fix type safety
-          onRowClick={(row) => void onViewItemDetails(row.uuid)}
-          sortingState={inventoryItemsSorting}
-          onPaginationChange={onPaginationChange}
-          onSortingChange={onInventoryItemsSortChange}
-          paginationState={inventoryItemsPaginationState}
-          onNextPage={onNextPage}
-          onPreviousPage={onPreviousPage}
-          onPageSelection={onPageSelection}
-        />
+        <InventoryDataTable />
       </div>
     </main>
   );

@@ -11,8 +11,26 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * 3. It does not support dead code elimination, so it will add unused operations.
  *
  * Therefore it is highly recommended to use the babel or swc plugin for production.
+ * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
-const documents = {
+type Documents = {
+    "\n  fragment ItemListing on Item {\n    uuid\n    name\n  }\n": typeof types.ItemListingFragmentDoc,
+    "\n  query itemsListing(\n    $pageIndex: Int!\n    $pageSize: Int!\n    $orderBy: String!\n    $orderDirection: String!\n    $filter: ItemQueryFilter!\n  ) {\n    items {\n      getItems(\n        pageIndex: $pageIndex\n        pageSize: $pageSize\n        orderBy: $orderBy\n        orderDirection: $orderDirection\n        filter: $filter\n      ) {\n        entities {\n          ...ItemListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n": typeof types.ItemsListingDocument,
+    "\n  fragment ItemDetails on Item {\n    uuid\n    name\n    value\n    displayValue\n    description\n    activationCost\n    usageRequirements\n    effect\n    traits\n    description\n    bulk\n    displayBulk\n    level\n    isConsumable\n  }\n": typeof types.ItemDetailsFragmentDoc,
+    "\n  query itemDetails($id: String!) {\n    items {\n      getItem(id: $id) {\n        ...ItemDetails\n      }\n    }\n  }\n": typeof types.ItemDetailsDocument,
+    "\n  mutation adjustItemsForInventory(\n    $inventoryId: String!\n    $items: [InventoryItemQuantityAdjustmentParams!]!\n  ) {\n    inventoryItems {\n      addOrRemoveItemsFromInventory(inventoryId: $inventoryId, items: $items)\n    }\n  }\n": typeof types.AdjustItemsForInventoryDocument,
+    "\n  mutation sellItemsForInventory(\n    $inventoryId: String!\n    $items: [InventoryItemQuantityAdjustmentParams!]!\n  ) {\n    inventoryItems {\n      sellItems(inventoryId: $inventoryId, items: $items)\n    }\n  }\n": typeof types.SellItemsForInventoryDocument,
+    "\n  mutation quickCreateItem($name: String!) {\n    items {\n      createItem(params: { name: $name }) {\n        name\n      }\n    }\n  }\n": typeof types.QuickCreateItemDocument,
+    "\n  mutation updateItem($id: String!, $params: ItemProperties!) {\n    items {\n      updateItem(itemUuid: $id, params: $params) {\n        ...ItemDetails\n      }\n    }\n  }\n": typeof types.UpdateItemDocument,
+    "\n  fragment InventoryItemListing on InventoryItem {\n    uuid\n    name\n    value\n    displayValue\n    quantity\n    traits\n    description\n    bulk\n    displayBulk\n    level\n    isConsumable\n  }\n": typeof types.InventoryItemListingFragmentDoc,
+    "\n  fragment InventoryWithItemsListing on InventoryWithItems {\n    inventory {\n      uuid\n      name\n      cp\n      sp\n      gp\n      pp\n      cp\n    }\n    items {\n      entities {\n        ...InventoryItemListing\n      }\n      pageIndex\n      pageSize\n      totalEntities\n      totalPages\n    }\n  }\n": typeof types.InventoryWithItemsListingFragmentDoc,
+    "\n  query inventoryWithItemsListing(\n    $id: String!\n    $pageIndex: Int!\n    $pageSize: Int!\n    $orderBy: String!\n    $orderDirection: String!\n    $filter: ItemQueryFilter!\n  ) {\n    inventoryWithItems {\n      getInventoryWithItemsById(\n        id: $id\n        pageIndex: $pageIndex\n        pageSize: $pageSize\n        orderBy: $orderBy\n        orderDirection: $orderDirection\n        filter: $filter\n      ) {\n        ...InventoryWithItemsListing\n      }\n    }\n  }\n": typeof types.InventoryWithItemsListingDocument,
+    "\n  mutation updateInventoryCurrency(\n    $inventoryId: String!\n    $params: InventoryCurrencyChangeInput!\n  ) {\n    inventory {\n      updateInventoryCurrency(inventoryId: $inventoryId, params: $params) {\n        uuid\n        name\n        cp\n        sp\n        gp\n        pp\n        cp\n      }\n    }\n  }\n": typeof types.UpdateInventoryCurrencyDocument,
+    "\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          uuid\n          name\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n": typeof types.InventoryListingDocument,
+    "\n  fragment TraitListing on Trait {\n    name\n    description\n  }\n": typeof types.TraitListingFragmentDoc,
+    "\n  query traitListing {\n    items {\n      getTraits {\n        ...TraitListing\n      }\n    }\n  }\n": typeof types.TraitListingDocument,
+};
+const documents: Documents = {
     "\n  fragment ItemListing on Item {\n    uuid\n    name\n  }\n": types.ItemListingFragmentDoc,
     "\n  query itemsListing(\n    $pageIndex: Int!\n    $pageSize: Int!\n    $orderBy: String!\n    $orderDirection: String!\n    $filter: ItemQueryFilter!\n  ) {\n    items {\n      getItems(\n        pageIndex: $pageIndex\n        pageSize: $pageSize\n        orderBy: $orderBy\n        orderDirection: $orderDirection\n        filter: $filter\n      ) {\n        entities {\n          ...ItemListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n": types.ItemsListingDocument,
     "\n  fragment ItemDetails on Item {\n    uuid\n    name\n    value\n    displayValue\n    description\n    activationCost\n    usageRequirements\n    effect\n    traits\n    description\n    bulk\n    displayBulk\n    level\n    isConsumable\n  }\n": types.ItemDetailsFragmentDoc,
@@ -25,8 +43,7 @@ const documents = {
     "\n  fragment InventoryWithItemsListing on InventoryWithItems {\n    inventory {\n      uuid\n      name\n      cp\n      sp\n      gp\n      pp\n      cp\n    }\n    items {\n      entities {\n        ...InventoryItemListing\n      }\n      pageIndex\n      pageSize\n      totalEntities\n      totalPages\n    }\n  }\n": types.InventoryWithItemsListingFragmentDoc,
     "\n  query inventoryWithItemsListing(\n    $id: String!\n    $pageIndex: Int!\n    $pageSize: Int!\n    $orderBy: String!\n    $orderDirection: String!\n    $filter: ItemQueryFilter!\n  ) {\n    inventoryWithItems {\n      getInventoryWithItemsById(\n        id: $id\n        pageIndex: $pageIndex\n        pageSize: $pageSize\n        orderBy: $orderBy\n        orderDirection: $orderDirection\n        filter: $filter\n      ) {\n        ...InventoryWithItemsListing\n      }\n    }\n  }\n": types.InventoryWithItemsListingDocument,
     "\n  mutation updateInventoryCurrency(\n    $inventoryId: String!\n    $params: InventoryCurrencyChangeInput!\n  ) {\n    inventory {\n      updateInventoryCurrency(inventoryId: $inventoryId, params: $params) {\n        uuid\n        name\n        cp\n        sp\n        gp\n        pp\n        cp\n      }\n    }\n  }\n": types.UpdateInventoryCurrencyDocument,
-    "\n  fragment InventoryListing on Inventory {\n    uuid\n    name\n  }\n": types.InventoryListingFragmentDoc,
-    "\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          ...InventoryListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n": types.InventoryListingDocument,
+    "\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          uuid\n          name\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n": types.InventoryListingDocument,
     "\n  fragment TraitListing on Trait {\n    name\n    description\n  }\n": types.TraitListingFragmentDoc,
     "\n  query traitListing {\n    items {\n      getTraits {\n        ...TraitListing\n      }\n    }\n  }\n": types.TraitListingDocument,
 };
@@ -96,11 +113,7 @@ export function graphql(source: "\n  mutation updateInventoryCurrency(\n    $inv
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment InventoryListing on Inventory {\n    uuid\n    name\n  }\n"): (typeof documents)["\n  fragment InventoryListing on Inventory {\n    uuid\n    name\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          ...InventoryListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n"): (typeof documents)["\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          ...InventoryListing\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          uuid\n          name\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n"): (typeof documents)["\n  query inventoryListing {\n    inventory {\n      getInventories {\n        entities {\n          uuid\n          name\n        }\n        pageIndex\n        pageSize\n        totalEntities\n        totalPages\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -188,19 +188,13 @@ export const UpdateInventoryCurrencyMutationDocument = graphql(`
   }
 `);
 
-export const InventoryListingFragment = graphql(/* GraphQL */ `
-  fragment InventoryListing on Inventory {
-    uuid
-    name
-  }
-`);
-
 export const InventoryListingQueryDocument = graphql(`
   query inventoryListing {
     inventory {
       getInventories {
         entities {
-          ...InventoryListing
+          uuid
+          name
         }
         pageIndex
         pageSize

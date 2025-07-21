@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/pagination";
 import {
   UsePaginationProps,
-  UsePaginationState,
 } from "@/hooks/pagination/types";
 import { usePagination } from "@/hooks/pagination/usePagination";
 

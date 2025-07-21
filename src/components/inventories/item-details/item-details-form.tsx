@@ -17,12 +17,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ItemDetailsFragment } from "@/gql/graphql";
 import { Option } from "@/types/form";
-import { MutableRefObject, useEffect } from "react";
+import { useEffect } from "react";
 import { MultiComboBox } from "@/components/ui/multi-combobox";
 import isNil from "lodash/isNil";
 import {
@@ -35,7 +34,6 @@ import {
 type ItemDetailsFormProps = {
   data?: ItemDetailsFragment | null;
   traitOptions: Option[];
-  parentRef?: MutableRefObject<HTMLDivElement | undefined>;
   onSubmit: (data: ItemFormProperties) => Promise<void>;
   onCancel?: () => void;
 };
@@ -43,7 +41,6 @@ type ItemDetailsFormProps = {
 export function ItemDetailsForm({
   data,
   traitOptions,
-  parentRef,
   onCancel,
   onSubmit: handleSubmit,
 }: ItemDetailsFormProps) {
@@ -77,13 +74,8 @@ export function ItemDetailsForm({
   }, [data, form]);
 
   function onSubmit(values: ItemFormProperties) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-
     handleSubmit(values);
   }
-
-  // console.log("FORM ", form.getValues());
 
   return (
     <Form {...form}>
@@ -160,7 +152,6 @@ export function ItemDetailsForm({
                 <div>
                   <MultiComboBox
                     placeholder="No traits set"
-                    container={parentRef?.current}
                     onChange={field.onChange}
                     defaultValues={field.value}
                     options={traitOptions}
@@ -185,7 +176,7 @@ export function ItemDetailsForm({
                     <SelectValue placeholder="No cost selected" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent container={parentRef?.current}>
+                <SelectContent>
                   {Object.entries(ACTIVATION_ACTION_COST_OPTIONS).map(
                     ([value, label]) => (
                       <SelectItem key={value} value={value}>

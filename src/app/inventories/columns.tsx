@@ -1,29 +1,16 @@
 "use client";
 
-import { FragmentType, useFragment } from "@/gql";
-import {} from "@/models/inventory-items/type";
 import { Column, ColumnDef, SortDirection } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { isNil } from "lodash";
 import { InventoryItemListingFragment } from "@/gql/graphql";
-import { InventoryItemListingFragmentDocument } from "@/hooks/inventories/graphql";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Tag } from "@/components/ui/tag";
 
-type CellRendererProps<T> = {
-  rowData: FragmentType<typeof InventoryItemListingFragmentDocument>;
-  getDisplayValue: (data: T) => string | number | JSX.Element;
-};
-
-function CellRenderer<T>({ rowData, getDisplayValue }: CellRendererProps<T>) {
-  const data = useFragment(InventoryItemListingFragmentDocument, rowData);
-  return <div>{getDisplayValue(data as T)}</div>;
-}
-
 type HeaderRendererProps = {
-  column: Column<any>;
+  column: Column<InventoryItemListingFragment>;
   title: string;
   sorterOverride?: string;
 };
@@ -67,10 +54,11 @@ function calcSortState(sortDir: SortDirection | false) {
   }
 }
 
+
 export function getInventoryColumns(
   onUseItem: (itemId: string) => Promise<void>,
-  onSellItem: (itemId: string) => Promise<void>,
-): ColumnDef<FragmentType<typeof InventoryItemListingFragmentDocument>>[] {
+  onSellItem: (itemId: string) => Promise<void>
+): ColumnDef<InventoryItemListingFragment>[] {
   return [
     {
       accessorKey: "name",
@@ -83,25 +71,15 @@ export function getInventoryColumns(
     {
       accessorKey: "bulk",
       header: ({ column }) => <HeaderRenderer title="Bulk" column={column} />,
-      cell: (props) => {
-        return (
-          <CellRenderer<InventoryItemListingFragment>
-            rowData={props.row.original}
-            getDisplayValue={(data) => data.displayBulk ?? "???"}
-          />
-        );
+      cell: ({ row }) => {
+        return <div>{row.original.displayBulk ?? "???"}</div>;
       },
     },
     {
       accessorKey: "value",
       header: ({ column }) => <HeaderRenderer title="Value" column={column} />,
-      cell: (props) => {
-        return (
-          <CellRenderer<InventoryItemListingFragment>
-            rowData={props.row.original}
-            getDisplayValue={(data) => data.displayValue ?? "???"}
-          />
-        );
+      cell: ({ row }) => {
+        return <div>{row.original.displayValue ?? "???"}</div>;
       },
     },
     {
@@ -113,34 +91,31 @@ export function getInventoryColumns(
     {
       accessorKey: "traits",
       header: "Traits",
-      cell: (props) => {
+      cell: ({ row }) => {
+        const { traits } = row.original;
         return (
-          <CellRenderer<InventoryItemListingFragment>
-            rowData={props.row.original}
-            getDisplayValue={(data) =>
-              (
-                <div className="flex flex-wrap gap-2">
-                  {data.traits?.map((t) => <Tag key={t} label={t} />)}{" "}
-                </div>
-              ) ?? "???"
-            }
-          />
+          <div>
+            {traits?.length ? (
+              <div className="flex flex-wrap gap-2">
+                {traits.map((t) => (
+                  <Tag key={t} label={t} />
+                ))}
+              </div>
+            ) : (
+              "???"
+            )}
+          </div>
         );
       },
     },
     {
       id: "actions",
-      cell: (props) => {
+      cell: ({ row }) => {
         return (
-          <CellRenderer<InventoryItemListingFragment>
-            rowData={props.row.original}
-            getDisplayValue={(item) => (
-              <InventoryItemActionRenderer
-                item={item}
-                onUseItem={onUseItem}
-                onSellItem={onSellItem}
-              />
-            )}
+          <InventoryItemActionRenderer
+            item={row.original}
+            onUseItem={onUseItem}
+            onSellItem={onSellItem}
           />
         );
       },
@@ -151,7 +126,6 @@ export function getInventoryColumns(
 type InventoryItemActionRendererProps = {
   item: InventoryItemListingFragment;
   onUseItem: (itemId: string) => Promise<void>;
-
   onSellItem: (itemId: string) => Promise<void>;
 };
 function InventoryItemActionRenderer({
@@ -162,7 +136,7 @@ function InventoryItemActionRenderer({
   const [isUsing, setIsUsing] = useState(false);
   const [isSelling, setIsSelling] = useState(false);
 
-  async function onUseItem(e: Event) {
+  async function onUseItem(e: React.MouseEvent) {
     e.stopPropagation();
     try {
       setIsUsing(true);
@@ -171,13 +145,13 @@ function InventoryItemActionRenderer({
     } catch (e) {
       console.error(e);
       toast.error(
-        `There as an issue using ${name}. Please refresh and try again.`,
+        `There was an issue using ${name}. Please refresh and try again.`
       );
     }
     setIsUsing(false);
   }
 
-  async function onSellItem(e: Event) {
+  async function onSellItem(e: React.MouseEvent) {
     e.stopPropagation();
     try {
       setIsSelling(true);
@@ -186,7 +160,7 @@ function InventoryItemActionRenderer({
     } catch (e) {
       console.error(e);
       toast.error(
-        `There as an issue selling ${name}. Please refresh and try again.`,
+        `There was an issue selling ${name}. Please refresh and try again.`
       );
     }
     setIsUsing(false);

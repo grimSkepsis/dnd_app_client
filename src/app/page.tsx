@@ -1,5 +1,3 @@
-import Image from "next/image";
-import { getClient } from "@/lib/client";
 
 export const revalidate = 5;
 

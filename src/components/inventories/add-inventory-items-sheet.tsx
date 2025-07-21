@@ -1,14 +1,11 @@
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { FragmentType, useFragment } from "@/gql";
 import { ItemListingFragment, ItemsListingQuery } from "@/gql/graphql";
 import { useState } from "react";
 import isNil from "lodash/isNil";
@@ -17,14 +14,13 @@ import isEmpty from "lodash/isEmpty";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { DialogProps } from "@radix-ui/react-dialog";
-import { ItemListingFragmentDocument } from "@/hooks/inventories/graphql";
 import {
   InventoryItemAdjustmentCallback,
   ItemQuantityAdjustmentDescription,
 } from "@/hooks/inventories/types";
 
 type InventoryItemOptionProps = {
-  data: FragmentType<typeof ItemListingFragmentDocument>;
+  data: ItemListingFragment;
   onClick: (item: ItemListingFragment) => void;
   isInTransationList?: boolean;
 };
@@ -34,7 +30,7 @@ function InventoryItemOption({
   onClick,
   isInTransationList,
 }: InventoryItemOptionProps) {
-  const item = useFragment(ItemListingFragmentDocument, data);
+  const item = data;
   return (
     <div
       className={[
@@ -134,7 +130,8 @@ export default function AddInventoryItemsSheet({
       toast(`Items added ${calcTransationString()}`);
       setItemsToAdd({});
       onOpenChange(false);
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       toast(`There was an error adding your items`);
     }
   }
@@ -148,7 +145,8 @@ export default function AddInventoryItemsSheet({
     try {
       await handleCreateItem(newItemName);
       toast(`Item created successfully!`);
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       toast(`There was an error creating the item`);
     }
     setNewItemName("");

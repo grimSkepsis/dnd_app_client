@@ -1,6 +1,5 @@
 import {
   AdjustItemQuantityMutationDocument,
-  InventoryWithItemsListingFragment,
   InventoryWithItemsListingQueryDocument,
   ItemDetailsQueryDocument,
   ItemsListingQueryDocument,
@@ -9,15 +8,12 @@ import {
   UpdateItemMutationDocument,
   UpdateInventoryCurrencyMutationDocument,
   InventoryListingQueryDocument,
-  InventoryListingFragment,
   TraitListingQueryDocument,
-  TraitListingFragment,
 } from "./graphql";
 import { useLazyQuery, useMutation, useSuspenseQuery } from "@apollo/client";
 import { SortingState, Updater } from "@tanstack/react-table";
 import { useState } from "react";
 import isEmpty from "lodash/isEmpty";
-import { useFragment } from "@/gql";
 import { isNil } from "lodash";
 import { DEFAULT_PAGINATION_STATE } from "../pagination/types";
 import { ItemQuantityAdjustmentDescription } from "./types";
@@ -46,17 +42,22 @@ export default function useInventoryManagement() {
     {
       loading: itemDetailsLoading,
       data: itemDetailsData,
-      error: itemDetailsError,
       refetch: refetchItemDetails,
     },
-  ] = useLazyQuery(ItemDetailsQueryDocument);
+  ] = useLazyQuery(ItemDetailsQueryDocument, {
+    fetchPolicy: "no-cache",
+  });
 
   const [updateInventoryCurrency] = useMutation(
     UpdateInventoryCurrencyMutationDocument
   );
 
-  const { data: inventoryListingData, refetch: refetchInventoryListing } =
-    useSuspenseQuery(InventoryListingQueryDocument);
+  const { data: inventoryListingData } = useSuspenseQuery(
+    InventoryListingQueryDocument,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
 
   const { data: inventoryAndItemsData, refetch: refetchInventoryAndItemsData } =
     useSuspenseQuery(InventoryWithItemsListingQueryDocument, {
@@ -71,32 +72,29 @@ export default function useInventoryManagement() {
           // excludedTraits: ["Toolkit"],
         },
       },
-
+      fetchPolicy: "no-cache",
       context: {
         fetchOptions: {
-          next: { revalidate: 5 },
+          cache: "no-store",
+          next: { revalidate: 0 },
         },
       },
     });
 
   const { data: traitListingData } = useSuspenseQuery(
-    TraitListingQueryDocument
+    TraitListingQueryDocument,
+    {
+      fetchPolicy: "no-cache",
+    }
   );
 
-  const traitFragmentData = useFragment(
-    TraitListingFragment,
-    traitListingData.items.getTraits
-  );
+  const traitFragmentData = traitListingData.items.getTraits;
 
-  const inventoryFragmentData = useFragment(
-    InventoryListingFragment,
-    inventoryListingData.inventory.getInventories.entities
-  );
+  const inventoryFragmentData =
+    inventoryListingData.inventory.getInventories.entities;
 
-  const inventoryAndItemsFragmentData = useFragment(
-    InventoryWithItemsListingFragment,
-    inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsById
-  );
+  const inventoryAndItemsFragmentData =
+    inventoryAndItemsData.inventoryWithItems.getInventoryWithItemsById;
 
   const inventoryItemsPaginationState = isNil(
     inventoryAndItemsFragmentData?.items
@@ -122,10 +120,11 @@ export default function useInventoryManagement() {
           // excludedTraits: ["Toolkit"],
         },
       },
-
+      fetchPolicy: "no-cache",
       context: {
         fetchOptions: {
-          next: { revalidate: 5 },
+          cache: "no-store",
+          next: { revalidate: 0 },
         },
       },
     });
@@ -215,17 +214,16 @@ export default function useInventoryManagement() {
   }
 
   async function onUpdateCurrency(inventoryId: string, currency: CurrencyData) {
-    console.log("CURRENCY TO UPDATE ", currency);
     await updateInventoryCurrency({
       variables: {
         inventoryId,
         params: currency,
       },
     });
+    await refetchInventoryAndItemsData();
   }
 
   async function onUpdateItem(id: string, params: ItemFormProperties) {
-    console.log("PARAMS TO UPDATE ", params);
     await updateItem({
       variables: {
         id,
@@ -235,7 +233,6 @@ export default function useInventoryManagement() {
     await Promise.all([refetchItemDetails(), refetchInventoryAndItemsData()]);
   }
 
-  //TODO - break into own hook
   async function onSelectInventory(inventoryId: string) {
     refetchInventoryAndItemsData({ id: inventoryId, pageIndex: 0 });
   }
@@ -244,7 +241,14 @@ export default function useInventoryManagement() {
     name: inventoryName,
     uuid: inventoryId,
     ...currency
-  } = inventoryAndItemsFragmentData?.inventory ?? { name: "", uuid: "" };
+  } = inventoryAndItemsFragmentData?.inventory ?? {
+    name: "",
+    uuid: "",
+    pp: 0,
+    gp: 0,
+    sp: 0,
+    cp: 0,
+  };
 
   return {
     inventoryItemsSorting,
