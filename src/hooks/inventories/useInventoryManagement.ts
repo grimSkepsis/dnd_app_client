@@ -44,14 +44,19 @@ export default function useInventoryManagement() {
       data: itemDetailsData,
       refetch: refetchItemDetails,
     },
-  ] = useLazyQuery(ItemDetailsQueryDocument);
+  ] = useLazyQuery(ItemDetailsQueryDocument, {
+    fetchPolicy: "no-cache",
+  });
 
   const [updateInventoryCurrency] = useMutation(
     UpdateInventoryCurrencyMutationDocument
   );
 
   const { data: inventoryListingData } = useSuspenseQuery(
-    InventoryListingQueryDocument
+    InventoryListingQueryDocument,
+    {
+      fetchPolicy: "no-cache",
+    }
   );
 
   const { data: inventoryAndItemsData, refetch: refetchInventoryAndItemsData } =
@@ -67,16 +72,20 @@ export default function useInventoryManagement() {
           // excludedTraits: ["Toolkit"],
         },
       },
-
+      fetchPolicy: "no-cache",
       context: {
         fetchOptions: {
-          next: { revalidate: 5 },
+          cache: "no-store",
+          next: { revalidate: 0 },
         },
       },
     });
 
   const { data: traitListingData } = useSuspenseQuery(
-    TraitListingQueryDocument
+    TraitListingQueryDocument,
+    {
+      fetchPolicy: "no-cache",
+    }
   );
 
   const traitFragmentData = traitListingData.items.getTraits;
@@ -111,10 +120,11 @@ export default function useInventoryManagement() {
           // excludedTraits: ["Toolkit"],
         },
       },
-
+      fetchPolicy: "no-cache",
       context: {
         fetchOptions: {
-          next: { revalidate: 5 },
+          cache: "no-store",
+          next: { revalidate: 0 },
         },
       },
     });
@@ -210,6 +220,7 @@ export default function useInventoryManagement() {
         params: currency,
       },
     });
+    await refetchInventoryAndItemsData();
   }
 
   async function onUpdateItem(id: string, params: ItemFormProperties) {
@@ -222,7 +233,6 @@ export default function useInventoryManagement() {
     await Promise.all([refetchItemDetails(), refetchInventoryAndItemsData()]);
   }
 
-  //TODO - break into own hook
   async function onSelectInventory(inventoryId: string) {
     refetchInventoryAndItemsData({ id: inventoryId, pageIndex: 0 });
   }
