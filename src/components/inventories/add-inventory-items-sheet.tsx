@@ -157,7 +157,7 @@ export default function AddInventoryItemsSheet({
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Select items to add to {inventoryName}</SheetTitle>
-          <div>
+          <div className="flex flex-col gap-8">
             <Input type="text" placeholder="Search..." />
             {/*TODO - get pagination working + infinite scroll*/}
             <ScrollArea className="h-48  rounded-md border">
@@ -175,32 +175,43 @@ export default function AddInventoryItemsSheet({
                 })}
               </div>
             </ScrollArea>
-            <h4>Adding...</h4>
-            {Object.values(itemsToAdd).map((description) => (
-              <InventoryItemAdditionOption
-                description={description}
-                key={description.item.uuid}
-                onClick={onRemoveItemFromTransaction}
+            <div className="flex flex-col gap-2">
+              {Object.values(itemsToAdd).length > 0 && (
+                <h4 className="text-lg text-muted-foreground">
+                  Adding tems...
+                </h4>
+              )}
+              {Object.values(itemsToAdd).map((description) => (
+                <InventoryItemAdditionOption
+                  description={description}
+                  key={description.item.uuid}
+                  onClick={onRemoveItemFromTransaction}
+                />
+              ))}
+              <Button
+                disabled={isEmpty(Object.values(itemsToAdd))}
+                onClick={onSubmitAddItems}
+              >
+                Add Items
+              </Button>
+            </div>
+            <div className="flex flex-col gap-4">
+              <h4 className="text-lg text-muted-foreground">
+                Quick Create Item
+              </h4>
+              <Input
+                type="text"
+                placeholder="Enter new item name..."
+                value={newItemName}
+                onChange={(e) => setNewItemName(e.target.value)}
               />
-            ))}
-            <Button
-              disabled={isEmpty(Object.values(itemsToAdd))}
-              onClick={onSubmitAddItems}
-            >
-              Submit
-            </Button>
-            <Input
-              type="text"
-              placeholder="Enter new item name..."
-              value={newItemName}
-              onChange={(e) => setNewItemName(e.target.value)}
-            />
-            <Button
-              disabled={isEmpty(newItemName)}
-              onClick={() => void onCreateItem()}
-            >
-              Create
-            </Button>
+              <Button
+                disabled={isEmpty(newItemName)}
+                onClick={() => void onCreateItem()}
+              >
+                Create
+              </Button>
+            </div>
           </div>
         </SheetHeader>
       </SheetContent>

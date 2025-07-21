@@ -188,6 +188,7 @@ export default function useInventoryManagement() {
         name,
       },
     });
+    await refetchItemOptions();
   }
 
   async function onUseItem(inventoryId: string, itemId: string) {
@@ -231,7 +232,11 @@ export default function useInventoryManagement() {
         params,
       },
     });
-    await Promise.all([refetchItemDetails(), refetchInventoryAndItemsData()]);
+    await Promise.all([
+      refetchItemDetails(),
+      refetchItemOptions(),
+      refetchInventoryAndItemsData(),
+    ]);
   }
 
   async function onSelectInventory(inventoryId: string) {
